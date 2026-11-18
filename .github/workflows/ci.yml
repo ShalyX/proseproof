@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit:
+    name: Extractor, compiler, guard, triage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Compile the fixture suite without a browser
+        run: node bin/proseproof.js plan --docs examples/northstar-ledger/README.md --url http://localhost:4177
+      - name: Prove the anti-cheat guard still rejects a deleted promise
+        run: node bin/proseproof.js guard --docs examples/northstar-ledger/README.md

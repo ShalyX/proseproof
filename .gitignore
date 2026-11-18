@@ -1,0 +1,43 @@
+# Hackathon Operator private working records — never publish
+.hackathon/
+/HACKATHON.md
+/COMPETITION_INTELLIGENCE.md
+/WINNING_PROFILE.md
+/SCORECARD.md
+/PROJECT.md
+/HYGIENE.md
+/PRODUCT.md
+/BRAND.md
+/DESIGN.md
+/LANDING_PAGE.md
+/DEMO.md
+/DEMO_STORYBOARD.md
+/DEMO_PRODUCTION_CHECKLIST.md
+
+# Judge-facing and evidence records are public
+!/JUDGE_WALKTHROUGH.md
+!/EVIDENCE.md
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# ProseProof runtime state — never publish raw runs
+.proseproof/
+.testmuai/
+output-*/
+
+# Kane evidence packs stay private unless explicitly redacted into the demo
+*.evidence
+*.evidence.verdicts/
+!demo/evidence/*.evidence
+
+# Local scratch
+scratch/
+*.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

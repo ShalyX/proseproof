@@ -1,0 +1,26 @@
+{
+  "name": "proseproof",
+  "version": "0.1.0",
+  "description": "Executable browser truth gate for READMEs and product docs, powered by Kane CLI.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "proseproof": "./bin/proseproof.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "demo": "node bin/proseproof.js demo",
+    "demo:app": "node --watch examples/northstar-ledger/server.js",
+    "demo:reset": "node scripts/reset-showcase.mjs",
+    "lint": "node --check bin/proseproof.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "yaml": "^2.8.1",
+    "yauzl": "^3.2.0",
+    "yazl": "^3.3.1"
+  }
+}

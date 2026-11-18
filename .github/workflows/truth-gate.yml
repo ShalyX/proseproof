@@ -1,0 +1,51 @@
+name: ProseProof truth gate
+
+# Kane CLI authenticates a human session today, so this job runs on a runner that
+# already has an authenticated `kane-cli` (label: kane-cli). On a GitHub-hosted
+# runner, use the committed `demo/` snapshot instead: `npx proseproof demo`.
+on:
+  workflow_dispatch:
+    inputs:
+      docs:
+        description: Documentation file that contains the promises
+        default: README.md
+        required: true
+      url:
+        description: Running app URL that Chrome should check
+        default: http://localhost:3000
+        required: true
+      start:
+        description: Shell command that starts the app (optional)
+        default: ""
+        required: false
+      health_url:
+        description: Health endpoint used to wait for a restart
+        default: ""
+        required: false
+
+jobs:
+  truth:
+    name: Prove the docs in Chrome
+    runs-on: [self-hosted, kane-cli]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Start the app under test
+        if: ${{ inputs.start != '' }}
+        run: ${{ inputs.start }} &
+      - name: Run the documented promises in real Chrome
+        run: |
+          node bin/proseproof.js check \
+            --docs "${{ inputs.docs }}" \
+            --url "${{ inputs.url }}" \
+            ${{ inputs.health_url && format('--health-url "{0}"', inputs.health_url) || '' }}
+      - name: Upload the sealed truth report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proseproof-report
+          path: .proseproof/runs/**
+          if-no-files-found: warn

@@ -1,0 +1,25 @@
+policy: proseproof-truth-gate
+requires:
+  catalog: kane-cli
+  version: ">=1"
+gates:
+  - id: no-failed-tests
+    metric: totals.failed
+    equals: 0
+    severity: blocking
+    message: Every documented promise must pass in a real browser.
+  - id: all-tests-pass
+    metric: pass_rate
+    min: 1
+    severity: blocking
+    message: A README claim regressed.
+  - id: every-test-asserts
+    metric: metrics.tests_without_checks
+    equals: 0
+    severity: blocking
+    message: Every generated test must end in a real assertion.
+  - id: review-heals
+    metric: metrics.heal.healed_tests
+    max: 0
+    severity: warning
+    message: A step needed adaptive healing; review the selector drift.
