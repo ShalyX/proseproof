@@ -180,7 +180,7 @@ app.get('/dashboard', (req, res) => {
     </form>
   </dialog>
 
-  <script src="/app.js"></script>`));
+  <script src="/app.js"></script>`, { signedIn: true }));
 });
 
 app.get('/api/invoices', (req, res) => {
