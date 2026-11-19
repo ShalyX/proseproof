@@ -129,24 +129,18 @@ function commandHeader(command, options) {
   info(`Docs ${(options.docs || ['README.md']).join(', ')}`);
 }
 
-// Live progress while Kane drives Chrome: one line per promise as it starts and ends.
-function memberLabel(member, run) {
-  const id = (/(N-\d+)/.exec(member?.path || member?.name || '') || [])[1] || run?.test_id || 'test';
+// Live progress while Kane drives Chrome: one line per promise as it is picked up.
+// Verdicts are printed once, from the merged report, never from intermediate events.
+function memberLabel(member) {
+  const id = (/(N-\d+)/.exec(member?.path || member?.name || '') || [])[1] || 'test';
   const title = member?.title || member?.name || '';
   const clean = String(title).replace(/^[^-]*-/, '').replace(/_/g, ' ').trim();
   return clean ? `${id} ${clean}` : id;
 }
 
 function printMemberEvent(event) {
-  const label = memberLabel(event.member, event.run);
-  if (event.phase === 'start') {
-    info(`${label} — Chrome is checking`);
-    return;
-  }
-  const status = event.run?.status;
-  if (status === 'passed') ok(`${label} — passed in Chrome`);
-  else if (status === 'broken') warn(`${label} — Kane reported a harness error; not counted against the app`);
-  else fail(`${label} — failed in Chrome; triaging`);
+  if (event.phase !== 'start') return;
+  info(`${memberLabel(event.member)} — Chrome is checking`);
 }
 
 export async function main(argv) {

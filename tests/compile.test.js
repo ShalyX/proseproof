@@ -48,6 +48,23 @@ test('a sign-in claim signs in through its own action', () => {
   assert.match(md, /verify you are on the "Invoices" dashboard/);
 });
 
+test('a universal promise asks the authoring agent to check every row', () => {
+  const md = compileClaim(
+    claim({
+      id: 'N-02',
+      title: 'Use the Show filter and choose Paid',
+      text: 'Use the Show filter and choose Paid — the table lists only paid invoices.',
+      action: 'Use the Show filter and choose Paid',
+      expectation: 'the table lists only paid invoices',
+      rawAction: 'Use the **Show** filter and choose **Paid**',
+      rawExpectation: 'the table lists only paid invoices',
+      location: 'README.md:23',
+    }),
+    { setup, url },
+  );
+  assert.match(md, /verify the table lists only paid invoices\. Check every visible row rather than a sample\./);
+});
+
 test('policy gates the run on zero failures and real assertions', () => {
   assert.match(POLICY_YAML, /metric: totals\.failed/);
   assert.match(POLICY_YAML, /metric: pass_rate/);

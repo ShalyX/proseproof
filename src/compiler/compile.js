@@ -36,7 +36,8 @@ function signInStep(setup) {
   const lines = ['## Sign in'];
   if (email && password) {
     lines.push(
-      `Go to the app. If the sign-in form is shown, sign in with "${email}" and "${password}". Verify the "Invoices" heading is visible.`,
+      `Go to the app. If a sign-in form is shown, sign in with "${email}" and "${password}" and submit it. ` +
+        'This step is complete only when the "Invoices" heading is visible on the page.',
     );
   } else {
     lines.push('Go to the app and verify the documented start page is visible.');
@@ -48,19 +49,24 @@ function claimStep(claim, setup) {
   const action = speakMarkdown(claim.rawAction ?? claim.action);
   const expectation = speakMarkdown(claim.rawExpectation ?? claim.expectation);
   const isSignIn = /sign in|log in/i.test(claim.text);
+  // "Only paid invoices" is a statement about every row. Saying so keeps the authoring
+  // agent from judging a sample and then rejecting a table that was in fact correct.
+  const every = expectation && /\bonly\b|\ball\b|\bevery\b/i.test(expectation)
+    ? ' Check every visible row rather than a sample.'
+    : '';
 
   if (isSignIn) {
     return expectation
-      ? `Go to the app and ${lowerFirst(action)}, then verify ${expectation}.`
+      ? `Go to the app and ${lowerFirst(action)}, then verify ${expectation}.${every}`
       : `Go to the app and ${lowerFirst(action)}.`;
   }
   if (!action) {
-    return `Go to the app, then verify ${expectation}.`;
+    return `Go to the app, then verify ${expectation}.${every}`;
   }
   const body = setup.credentials
     ? `From the signed-in dashboard, ${lowerFirst(action)}`
     : upperFirst(action);
-  return expectation ? `${body}, then verify ${expectation}.` : `${body}.`;
+  return expectation ? `${body}, then verify ${expectation}.${every}` : `${body}.`;
 }
 
 function lowerFirst(value) {

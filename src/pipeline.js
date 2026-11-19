@@ -113,6 +113,7 @@ export async function executeSuite({ rootDir, files, policyPath, name = 'prosepr
   if (headless) args.push('--headless');
 
   const startedAt = Date.now();
+  const announced = new Set();
   const result = await runKane(args, {
     cwd: rootDir,
     timeoutMs,
@@ -124,10 +125,15 @@ export async function executeSuite({ rootDir, files, policyPath, name = 'prosepr
       } catch {
         return;
       }
-      if (event?.type !== 'testrun_member_event') return;
-      const phase = event.event?.type;
-      if (phase === 'run_start') onMember({ phase: 'start', member: event.member });
-      if (phase === 'run_end') onMember({ phase: 'end', member: event.member, run: event.event });
+      // One start line per member. Kane emits several run_start/run_end pairs while it
+      // branches between authoring and replay; the suite verdict is the authoritative
+      // result, so live output only announces that a promise is being checked.
+      if (event.type === 'testrun_member_start' || event.type === 'testrun_authored_member_start') {
+        const key = event.member?.path || event.path || '';
+        if (announced.has(key)) return;
+        announced.add(key);
+        onMember({ phase: 'start', member: event.member || { path: event.path } });
+      }
     },
   });
   const events = parseLines(result.lines);
