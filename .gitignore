@@ -41,3 +41,6 @@ scratch/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local derisk transcripts (raw Kane NDJSON with session + share links)
+/spikes/
