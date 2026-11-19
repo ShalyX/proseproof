@@ -83,6 +83,57 @@ test('a failure with no separating signal stays UNVERIFIABLE', () => {
   assert.equal(result.confidence, 0.4);
 });
 
+test('a missing documented outcome is a product defect, not doc drift', () => {
+  const result = classifyTest({
+    test: run({
+      failure: {
+        triage: {
+          rca: {
+            category: 'application_issue/functional_defect',
+            root_cause: 'The export action was triggered successfully, but it did not result in the required file download.',
+          },
+        },
+      },
+    }),
+    memberRun: {
+      verdict: {
+        signals: [{ kind: 'objective_contradiction', excerpt: 'Final verification failed: "a file downloads"' }],
+        one_liner: 'Clicking Export CSV contacts the export service, but the expected invoices.csv file is not downloaded.',
+      },
+    },
+    claim: {
+      id: 'N-04',
+      title: 'Click Export CSV',
+      text: 'click export csv and a file named invoices.csv downloads',
+      expectation: 'a file named invoices.csv downloads',
+    },
+  });
+  assert.equal(result.classification, 'APP_BUG');
+  assert.equal(result.status, 'LIED');
+  assert.equal(result.observed, null);
+});
+
+test('an objective contradiction about copy is drift when a different label is quoted', () => {
+  const result = classifyTest({
+    test: run({
+      failure: { triage: { rca: { category: 'application_issue/objective_contradiction' } } },
+    }),
+    memberRun: {
+      verdict: {
+        one_liner: 'The card reads "Collected this month" rather than "Paid this month".',
+      },
+    },
+    claim: {
+      id: 'N-05',
+      title: 'Monthly summary',
+      text: 'the first card is labelled "Paid this month"',
+      expectation: 'the first card is labelled "Paid this month"',
+    },
+  });
+  assert.equal(result.classification, 'DOC_DRIFT');
+  assert.equal(result.observed, 'Collected this month');
+});
+
 test('summary counts the three outcomes separately', () => {
   const summary = summarizeTriage([
     { status: 'PROVEN', classification: 'PROVEN' },

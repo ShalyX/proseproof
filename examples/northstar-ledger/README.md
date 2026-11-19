@@ -22,7 +22,7 @@ Sign in with `demo@northstar.dev` / `demo1234`, then follow these checks against
 1. Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.
 2. Use the **Show** filter and choose **Paid** — the table lists only paid invoices.
 3. Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.
-4. Click **Export CSV** — a file named `invoices.csv` downloads.
+4. Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.
 5. Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.
 
 ## What is in the ledger

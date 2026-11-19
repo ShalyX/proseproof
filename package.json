@@ -7,6 +7,16 @@
   "bin": {
     "proseproof": "./bin/proseproof.js"
   },
+  "files": [
+    "bin/",
+    "src/",
+    "docs/",
+    "examples/",
+    "demo/",
+    "scripts/",
+    "README.md",
+    "LICENSE"
+  ],
   "engines": {
     "node": ">=22"
   },

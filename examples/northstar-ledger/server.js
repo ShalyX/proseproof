@@ -117,6 +117,8 @@ app.get('/dashboard', (req, res) => {
       </div>
     </div>
 
+    <p class="export-status" id="export-status" role="status" hidden></p>
+
     <section class="summary" aria-label="Monthly summary">
       <article class="card accent">
         <p class="card-label">Collected this month</p>

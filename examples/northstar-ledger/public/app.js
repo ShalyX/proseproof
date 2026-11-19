@@ -25,7 +25,9 @@ document.getElementById('new-invoice')?.addEventListener('click', () => {
 document.getElementById('cancel')?.addEventListener('click', () => dialog.close());
 
 document.getElementById('export')?.addEventListener('click', async () => {
+  const status = document.getElementById('export-status');
   const response = await fetch('/api/export');
+  // The planted defect: a failed export returns silently, with no message for the user.
   if (!response.ok) return;
   const blob = await response.blob();
   const url = URL.createObjectURL(blob);
@@ -34,6 +36,10 @@ document.getElementById('export')?.addEventListener('click', async () => {
   link.download = 'invoices.csv';
   link.click();
   URL.revokeObjectURL(url);
+  if (status) {
+    status.textContent = 'Exported invoices to invoices.csv';
+    status.hidden = false;
+  }
 });
 
 form?.addEventListener('submit', async (event) => {

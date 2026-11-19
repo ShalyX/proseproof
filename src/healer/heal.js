@@ -103,8 +103,12 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
     : [];
 
   for (const failure of failing) {
-    if (failure.classification === 'UNVERIFIABLE') {
-      patchLog.push({ claimId: failure.claimId, skipped: true, reason: 'Unverifiable failure — no patch attempted.' });
+    if (failure.status === 'UNVERIFIABLE') {
+      const reason = failure.classification === 'PLATFORM_ERROR'
+        ? `Kane could not judge this claim: ${failure.reason}`
+        : 'Unverifiable failure — no patch attempted.';
+      patchLog.push({ claimId: failure.claimId, skipped: true, reason });
+      onEvent?.({ type: 'patch-skipped', claimId: failure.claimId, reason });
       continue;
     }
     const claim = currentClaims.find((item) => item.id === failure.claimId);

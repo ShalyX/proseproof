@@ -229,11 +229,11 @@ ${diffSection(report)}
       <dl class="evidence-list">
         <div><dt>Evidence ID</dt><dd><code>${escapeHtml(report.evidence?.id || '—')}</code></dd></div>
         <div><dt>Pack</dt><dd><code>${escapeHtml(report.evidence?.packPath || '—')}</code></dd></div>
-        <div><dt>Integrity</dt><dd>${report.evidence?.validation?.valid ? '<span class="pill is-proven">L1 VALID</span>' : '<span class="pill is-unknown">SEE PACK</span>'}</dd></div>
+        <div><dt>Integrity</dt><dd>${report.evidence?.validation?.valid ? '<span class="pill is-proven">L1 VALID</span>' : '<span class="pill is-unknown">UNVALIDATED</span>'}</dd></div>
         <div><dt>Tests sealed</dt><dd>${escapeHtml((report.evidence?.tests || []).length)}</dd></div>
       </dl>
       <p class="detail-label" style="margin-top:22px">Reproduce</p>
-      <pre class="cmd">npx proseproof check --docs ${escapeHtml((report.docs || ['README.md'])[0])} --url ${escapeHtml(report.url)}</pre>
+      <pre class="cmd">node bin/proseproof.js check --docs ${escapeHtml((report.docs || ['README.md'])[0])} --url ${escapeHtml(report.url)}</pre>
     </div>
   </div>
 </section>

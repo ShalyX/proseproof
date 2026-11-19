@@ -134,13 +134,16 @@ export function classifyTest({ test, claim, memberRun, breakdown = [] }) {
     };
   }
 
-  const looksLikeCopy =
-    /ui_data_defect|ui_mismatch|content_mismatch|copy|label|wording|objective_contradiction/.test(category) ||
-    signalKinds.includes('objective_contradiction') ||
-    /different .*(label|copy|wording|heading|text)|instead of|rather than/i.test(`${oneLiner} ${rootCause} ${failureMessage}`);
+  // Copy drift needs evidence about copy. A generic "objective contradiction" can be
+  // a missing file, a wrong total, or a dead download; that is a product defect.
+  const copyCategory = /ui_data_defect|ui_mismatch|content_mismatch|copy|label|wording/.test(category);
+  const copyPhrase = /different .*(label|copy|wording|heading|text)|instead of|rather than|labelled|labeled/i.test(
+    `${oneLiner} ${rootCause} ${failureMessage}`,
+  );
+  const observed = observedLabel(`${oneLiner} ${rootCause}`, promised);
+  const looksLikeCopy = copyCategory || copyPhrase || Boolean(observed);
 
   if (looksLikeCopy) {
-    const observed = observedLabel(`${oneLiner} ${rootCause}`, promised);
     const driftScore = observed ? similarity(observed, promised) : 0;
     return {
       ...base,
@@ -152,6 +155,18 @@ export function classifyTest({ test, claim, memberRun, breakdown = [] }) {
         ? `Docs promise “${promised}”, but Chrome shows “${observed}”.`
         : `Chrome contradicts the documented copy: ${base.evidence.kaneRootCause || failureMessage}`,
       evidence: { ...base.evidence, driftScore },
+    };
+  }
+
+  // The documented flow ran, but the promised outcome never happened (no file, no row,
+  // no confirmation). The doc described the product correctly; the product failed it.
+  if (/functional_defect|objective_contradiction|missing_outcome|timeout/.test(category)) {
+    return {
+      ...base,
+      status: 'LIED',
+      classification: 'APP_BUG',
+      confidence: 0.72,
+      reason: base.evidence.kaneRootCause || oneLiner || 'Chrome did not produce the documented outcome.',
     };
   }
 
