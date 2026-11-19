@@ -53,3 +53,23 @@ test('--fresh drops recordings so a harness failure cannot be inherited', () => 
   assert.equal(fs.existsSync(recording), false, 'recording should be removed by --fresh');
   assert.ok(fs.existsSync(plan.files[0]), 'test definitions are not removed');
 });
+
+test('reauthoring a patched promise drops only that recording', () => {
+  const { root, outDir } = fixture();
+  const plan = planProject({ rootDir: root, docPaths: ['README.md'], url: 'http://localhost:4177', outDir });
+  const testsDir = path.join(plan.suiteDir, 'tests');
+  const n01 = path.join(testsDir, 'output-N-01-sign-in');
+  const n02 = path.join(testsDir, 'output-N-02-click-export-csv');
+  fs.mkdirSync(n01, { recursive: true });
+  fs.mkdirSync(n02, { recursive: true });
+
+  planProject({
+    rootDir: root,
+    docPaths: ['README.md'],
+    url: 'http://localhost:4177',
+    outDir,
+    reauthor: ['N-02'],
+  });
+  assert.ok(fs.existsSync(n01), 'untouched recordings replay');
+  assert.equal(fs.existsSync(n02), false, 'the patched promise is authored again');
+});

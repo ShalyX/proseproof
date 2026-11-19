@@ -34,7 +34,7 @@ export function resolveDocs(rootDir, docPaths) {
   return resolved.map((file) => ({ path: file, content: readText(file, '') }));
 }
 
-export function planProject({ rootDir, docPaths, url, outDir, fresh = false }) {
+export function planProject({ rootDir, docPaths, url, outDir, fresh = false, reauthor = [] }) {
   const docs = resolveDocs(rootDir, docPaths);
   if (!docs.length) throw new Error('No documentation files found. Pass --docs README.md');
   const extracted = extractClaims({ docs, baseUrl: url });
@@ -56,9 +56,13 @@ export function planProject({ rootDir, docPaths, url, outDir, fresh = false }) {
 
   // --fresh drops Kane's recordings so every promise is authored from scratch.
   // Use it when a replay inherited a harness failure and the page itself is fine.
-  if (fresh) {
+  // `reauthor` is the targeted form: drop recordings only for claims whose artifact
+  // changed, so the second pass proves the fix instead of replaying the failure.
+  const droppable = fresh ? null : reauthor;
+  if (fresh || droppable.length) {
     for (const entry of fs.readdirSync(compiled.testsDir, { withFileTypes: true })) {
-      if (entry.isDirectory() && entry.name.startsWith('output-')) {
+      if (!entry.isDirectory() || !entry.name.startsWith('output-')) continue;
+      if (fresh || droppable.some((id) => entry.name.startsWith(`output-${id}-`))) {
         rmrf(path.join(compiled.testsDir, entry.name));
       }
     }
@@ -86,7 +90,7 @@ export function planProject({ rootDir, docPaths, url, outDir, fresh = false }) {
   };
 }
 
-export async function executeSuite({ rootDir, files, policyPath, name = 'proseproof', parallel = 2, timeoutMs = 1_500_000, onMember }) {
+export async function executeSuite({ rootDir, files, policyPath, name = 'proseproof', parallel = 2, timeoutMs = 1_500_000, headless = false, onMember }) {
   const lint = await lintPolicy(policyPath, { cwd: rootDir });
   if (lint.code !== 0) {
     const problems = (lint.report?.files || []).flatMap((file) => file.diagnostics || []);
@@ -104,6 +108,9 @@ export async function executeSuite({ rootDir, files, policyPath, name = 'prosepr
     '--policy', relativeTo(rootDir, policyPath),
     '--name', name,
   ];
+  // Headless keeps screenshots working on locked or remote desktops, where a headed
+  // Chrome cannot produce frames and Kane's capture times out.
+  if (headless) args.push('--headless');
 
   const startedAt = Date.now();
   const result = await runKane(args, {
@@ -213,8 +220,8 @@ export async function analyzePack({ rootDir, packPath, packPaths, runDir, claims
   return { pack, triage, summary: summarizeTriage(triage) };
 }
 
-export async function runCheck({ rootDir, docPaths, url, mode = 'check', parallel = 2, fresh = false, onEvent }) {
-  const plan = planProject({ rootDir, docPaths, url, fresh });
+export async function runCheck({ rootDir, docPaths, url, mode = 'check', parallel = 2, fresh = false, reauthor = [], headless = false, onEvent }) {
+  const plan = planProject({ rootDir, docPaths, url, fresh, reauthor });
   const runId = `${timestampId()}-${mode}`;
   const runDir = ensureDir(path.join(rootDir, RUNS_DIR, runId));
 
@@ -229,6 +236,7 @@ export async function runCheck({ rootDir, docPaths, url, mode = 'check', paralle
     name: `proseproof-${mode}`,
     parallel,
     timeoutMs: 1_500_000,
+    headless,
     onMember: (info) => onEvent?.({ type: 'member', ...info }),
   });
 

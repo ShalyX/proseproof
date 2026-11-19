@@ -113,6 +113,9 @@ node bin/proseproof.js check \
   --docs examples/northstar-ledger/README.md \
   --url http://localhost:4177
 
+# Add --headless on a remote or locked desktop, where a headed Chrome
+# cannot capture frames.
+
 # Open the report
 node bin/proseproof.js report --port 4178
 ```
@@ -227,6 +230,10 @@ outputs, reset procedure, and the fallback if Kane CLI or Chrome is unavailable.
   Kane shipping a token-based login.
 - Recorded on Windows 11, Node 24, Chrome 157. macOS/Linux paths are implemented
   but not yet recorded.
+- Kane's headed Chrome needs a live desktop session. On a locked or remote
+  Windows desktop the browser cannot produce frames and Kane's screenshot
+  capture times out; the run is reported as a harness failure, not a lie.
+  Pass `--headless` in that situation (the recorded showcase used `--headless`).
 - The deterministic `recipe` repair only aligns quoted UI labels; application
   bugs need the LLM backend.
 

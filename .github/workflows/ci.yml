@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
   pull_request:
   workflow_dispatch:
 
@@ -22,3 +22,5 @@ jobs:
         run: node bin/proseproof.js plan --docs examples/northstar-ledger/README.md --url http://localhost:4177
       - name: Prove the anti-cheat guard still rejects a deleted promise
         run: node bin/proseproof.js guard --docs examples/northstar-ledger/README.md
+      - name: Audit judge-facing artifacts for leaks and stale markers
+        run: node scripts/audit-publication.mjs

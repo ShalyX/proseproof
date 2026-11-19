@@ -49,7 +49,9 @@ fast instead of producing a meaningless verdict.
 `src/runner/kane.js` spawns `kane-cli testrun run` with `--agent`,
 `--stream-members`, `--on-failure continue`, and the generated policy. ProseProof
 never drives the browser itself: Chrome, the page model, screenshots, and step
-logs are all Kane's.
+logs are all Kane's. `--headless` is passed through when the desktop cannot show
+a browser: a headed Chrome on a locked or remote desktop produces no frames, and
+Kane's screenshot capture then times out.
 
 Kane emits NDJSON. Two event families are load-bearing:
 
@@ -68,7 +70,7 @@ ProseProof then reads the **per-member packs** that were sealed and marks the
 report as unsealed. A harness crash is never allowed to erase the verdicts of the
 tests that did run.
 
-## 5. Triage: three honest outcomes
+## 5. Triage: honest outcomes
 
 `src/triage/classify.js` is the product. It reads the failure evidence in this
 order:
@@ -77,9 +79,15 @@ order:
 | --- | --- | --- |
 | test passed | `PROVEN` | Every documented step happened in Chrome. |
 | HTTP 4xx/5xx, `api_error`, `network_failure` | `APP_BUG` | A documented flow broke. The doc was right; the app was not. |
-| `ui_data_defect`, `objective_contradiction`, wording mismatch | `DOC_DRIFT` | The flow worked, but the shipped copy contradicts the doc. |
-| harness crash, CDP/screenshot timeout | `PLATFORM_ERROR` | Kane could not judge. Nothing is proven about the app **or** the doc. |
+| `functional_defect` / a missing documented outcome, with no copy signal | `APP_BUG` | The flow ran but never produced the promised result: no file, no row, no confirmation. |
+| `ui_data_defect`, or a quoted label Chrome rendered differently | `DOC_DRIFT` | The flow worked, but the shipped copy contradicts the doc. |
+| harness crash, CDP/screenshot timeout, Kane `automation_bug/*` | `PLATFORM_ERROR` | Kane could not judge. Nothing is proven about the app **or** the doc. |
 | anything else | `UNVERIFIABLE` | Not enough signal to blame either side. |
+
+A generic "objective contradiction" is **not** enough to call drift: a missing
+download contradicts the objective too. Drift needs evidence about copy — a
+`ui_data_defect` category, a wording phrase, or a label Kane quotes from the page
+that does not match the promised text.
 
 The platform row exists because the first real run of this tool hit it: two
 claims failed on `connect_over_cdp` and a screenshot timeout, not on the app.
@@ -111,8 +119,10 @@ misbehaving.
    the files it may edit. It returns minimal search/replace edits.
 4. The guard rejects the patch if a promise disappeared.
 5. The patch is applied; a dev server on `--watch` restarts.
-6. Kane re-runs the same docs. The report keeps both runs, the diff, and the
-   guard decision.
+6. Kane re-runs the same docs. A claim whose artifact changed is authored again
+   instead of replaying its old recording, so the second run proves the fix
+   rather than the failure. The report keeps both runs, the diff, and the guard
+   decision.
 
 The agent is optional. With no API key, a deterministic recipe handles one class
 of repair (align a quoted label with the copy Chrome saw) and refuses everything

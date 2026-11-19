@@ -68,8 +68,8 @@ export function gitDiff(rootDir, files) {
   }
 }
 
-export async function heal({ rootDir, docPaths, url, source = [], healthUrl = null, fresh = false, onEvent }) {
-  const first = await runCheck({ rootDir, docPaths, url, mode: 'check', fresh, onEvent });
+export async function heal({ rootDir, docPaths, url, source = [], healthUrl = null, fresh = false, headless = false, onEvent }) {
+  const first = await runCheck({ rootDir, docPaths, url, mode: 'check', fresh, headless, onEvent });
 
   const beforeSummary = first.report.summary;
   const failing = first.report.claims.filter((claim) => claim.status !== 'PROVEN');
@@ -97,6 +97,7 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
   const allowedFiles = [...new Set([...docRel, ...sourceRel])];
 
   const patchLog = [];
+  const reauthor = new Set();
   let currentClaims = first.plan.claims;
   let workingDocs = first.plan.claims
     ? docRel.map((rel) => ({ path: path.resolve(rootDir, rel), rel, content: readText(path.resolve(rootDir, rel), '') }))
@@ -109,6 +110,9 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
         : 'Unverifiable failure — no patch attempted.';
       patchLog.push({ claimId: failure.claimId, skipped: true, reason });
       onEvent?.({ type: 'patch-skipped', claimId: failure.claimId, reason });
+      // A harness failure leaves a recording that cannot be trusted. Re-author it on the
+      // second run instead of replaying the crash.
+      if (failure.classification === 'PLATFORM_ERROR') reauthor.add(failure.claimId);
       continue;
     }
     const claim = currentClaims.find((item) => item.id === failure.claimId);
@@ -165,6 +169,9 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
 
       const applied = applyEdits(rootDir, proposal.edits);
       accepted = { proposal, applied, guard: guardResult, attempt };
+      // The artifact changed, so the old recording proves the old behaviour. Force a
+      // fresh authoritative run for this claim on the second pass.
+      reauthor.add(failure.claimId);
       workingDocs = workingDocs.map((doc) => {
         let content = doc.content;
         for (const edit of proposal.edits) {
@@ -203,7 +210,7 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
     onEvent?.({ type: 'health', healthy });
   }
 
-  const second = await runCheck({ rootDir, docPaths, url, mode: 'heal', onEvent });
+  const second = await runCheck({ rootDir, docPaths, url, mode: 'heal', reauthor: [...reauthor], headless, onEvent });
   second.report.before = {
     summary: beforeSummary,
     policy: first.report.policy,

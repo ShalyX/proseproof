@@ -26,6 +26,10 @@ You are looking at the Truth Console for the healed run:
 Requirements: Node 22+, Chrome, and Kane CLI v0.10.5 authenticated as your own
 account (`kane-cli --version`).
 
+Add `--headless` to the commands below if Chrome cannot open a visible window
+(remote or locked desktop). Without it, Kane's screenshot capture can time out;
+ProseProof reports that as a `HARNESS` row instead of blaming the app.
+
 ```bash
 npm ci
 npm run demo:app          # terminal 1, http://localhost:4177

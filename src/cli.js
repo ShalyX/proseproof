@@ -58,6 +58,7 @@ function resolveOptions(flags, config) {
     redact: (Array.isArray(flags.redact) ? flags.redact : flags.redact ? [flags.redact] : config.redact || []),
     port: Number(flags.port || config.port || 4178),
     fresh: Boolean(flags.fresh || config.fresh),
+    headless: Boolean(flags.headless || config.headless),
     config,
   };
 }
@@ -166,7 +167,7 @@ ProseProof — executable browser truth gate for docs.
   proseproof verify <pack.evidence>
   proseproof init  [--docs README.md] [--url http://localhost:3000]
 
-Flags: --docs, --url, --source, --health-url, --parallel, --serve, --port, --redact, --fresh
+Flags: --docs, --url, --source, --health-url, --parallel, --serve, --port, --redact, --fresh, --headless
 Agent:  PROSEPROOF_AGENT=llm|cmd|recipe
         PROSEPROOF_LLM_BASE_URL / PROSEPROOF_LLM_API_KEY / PROSEPROOF_LLM_MODEL
 `);
@@ -259,6 +260,7 @@ Agent:  PROSEPROOF_AGENT=llm|cmd|recipe
         source: options.source,
         healthUrl: options.healthUrl,
         fresh: options.fresh,
+        headless: options.headless,
         onEvent: (event) => {
           if (event.type === 'plan') step(`Extracted ${event.plan.claims.length} promises from ${event.plan.docs.join(', ')}`);
           if (event.type === 'suite') step(`Compiled ${event.files.length} Kane tests + policy gate`);
@@ -280,6 +282,7 @@ Agent:  PROSEPROOF_AGENT=llm|cmd|recipe
         mode: 'check',
         parallel: options.parallel,
         fresh: options.fresh,
+        headless: options.headless,
         onEvent: (event) => {
           if (event.type === 'plan') step(`Extracted ${event.plan.claims.length} promises from ${event.plan.docs.join(', ')}`);
           if (event.type === 'suite') step(`Compiled ${event.files.length} Kane tests + policy gate`);
