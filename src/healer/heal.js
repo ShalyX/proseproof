@@ -68,8 +68,8 @@ export function gitDiff(rootDir, files) {
   }
 }
 
-export async function heal({ rootDir, docPaths, url, source = [], healthUrl = null, onEvent }) {
-  const first = await runCheck({ rootDir, docPaths, url, mode: 'check', onEvent });
+export async function heal({ rootDir, docPaths, url, source = [], healthUrl = null, fresh = false, onEvent }) {
+  const first = await runCheck({ rootDir, docPaths, url, mode: 'check', fresh, onEvent });
 
   const beforeSummary = first.report.summary;
   const failing = first.report.claims.filter((claim) => claim.status !== 'PROVEN');

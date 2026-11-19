@@ -2,7 +2,8 @@ name: ProseProof truth gate
 
 # Kane CLI authenticates a human session today, so this job runs on a runner that
 # already has an authenticated `kane-cli` (label: kane-cli). On a GitHub-hosted
-# runner, use the committed `demo/` snapshot instead: `npx proseproof demo`.
+# runner, open the committed `demo/index.html` snapshot instead — it needs nothing
+# installed.
 on:
   workflow_dispatch:
     inputs:

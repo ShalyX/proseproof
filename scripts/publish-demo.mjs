@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { renderReport } from '../src/report/render.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const demoDir = path.join(root, 'demo');
@@ -72,6 +73,9 @@ report.publishedFrom = report.id;
 
 fs.writeFileSync(path.join(demoDir, 'report.json'), JSON.stringify(report, null, 2) + '\n', 'utf8');
 
+// A zero-install copy of the console: open demo/index.html straight from disk.
+fs.writeFileSync(path.join(demoDir, 'index.html'), renderReport(report), 'utf8');
+
 const header = [
   '# Sealed demo run',
   '',
@@ -89,11 +93,14 @@ const header = [
   'fields inside the evidence packs were rewritten before publication; the packs still pass',
   '`kane-cli evidence validate --profile L1`.',
   '',
-  'Serve it with:',
+  'Serve it with:', 
   '',
   '```bash',
-  'npx proseproof demo',
+  'node bin/proseproof.js demo',
   '```',
+  '',
+  'Or open `index.html` in this directory directly: it is a self-contained snapshot with',
+  'no server, no CDN, and no JavaScript beyond the optional live-reload hook.',
   '',
 ].join('\n');
 

@@ -4,14 +4,14 @@ import { redactText } from '../src/redact/redact.js';
 
 test('redacts identities and share links from evidence text', () => {
   const input = [
-    'user_name: shallomalabi89',
-    'user_email: shallomalabi89@gmail.com',
+    'user_name: qa.reviewer',
+    'user_email: qa.reviewer@example.com',
     'sharable_link: https://test-manager.lambdatest.com/t/abc123',
     'org_id: "3437607"',
   ].join('\n');
   const { output, count } = redactText(input);
   assert.equal(count, 4);
-  assert.equal(output.includes('shallomalabi89'), false);
+  assert.equal(output.includes('qa.reviewer'), false);
   assert.equal(output.includes('abc123'), false);
   assert.match(output, /user_name: redacted/);
   assert.match(output, /org_id: redacted/);

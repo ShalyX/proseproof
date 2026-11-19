@@ -20,7 +20,7 @@ function fixturePack() {
       'definition:',
       '  path: test.md',
       '  sha256: sha256:0000',
-      'user_name: shallomalabi89',
+      'user_name: qa.reviewer',
       '',
     ].join('\n'),
   );
@@ -45,7 +45,7 @@ test('redaction leaves demo credentials in a test definition intact', async () =
   const testFile = path.join(unpacked, 'tests', 'n-01-sign-in-abc', 'test.md');
   assert.match(fs.readFileSync(testFile, 'utf8'), /demo@northstar\.dev/);
   const result = fs.readFileSync(path.join(unpacked, 'tests', 'n-01-sign-in-abc', 'result.yaml'), 'utf8');
-  assert.equal(result.includes('shallomalabi89'), false);
+  assert.equal(result.includes('qa.reviewer'), false);
   assert.equal(result.includes('sha256:0000'), false);
   assert.match(result, /sha256: sha256:[a-f0-9]{64}/);
 });

@@ -25,6 +25,8 @@
     "demo": "node bin/proseproof.js demo",
     "demo:app": "node --watch examples/northstar-ledger/server.js",
     "demo:reset": "node scripts/reset-showcase.mjs",
+    "demo:publish": "node scripts/publish-demo.mjs",
+    "audit": "node scripts/audit-publication.mjs",
     "lint": "node --check bin/proseproof.js"
   },
   "dependencies": {

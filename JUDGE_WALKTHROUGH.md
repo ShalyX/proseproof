@@ -1,151 +1,146 @@
-# JUDGE WALKTHROUGH — INDEPENDENT PRODUCT EVALUATION
+# Judge walkthrough
 
-This is the operating manual for a judge who has not met the builder. Every step must match the current product and be reproducible.
+Three ways in, from zero-install to full closed loop. Pick the one that fits your
+time. Nothing here is simulated: the screenshots and the evidence pack in `demo/`
+come from the recorded run whose id is printed in the report header.
 
-## Evaluation entry point
+---
 
-Product:
-Live application:
-Repository:
-Demo:
-Expected evaluation time:
-Last rehearsed:
-Environment/build revision:
-Primary product promise:
-Core differentiator:
-Central payoff:
+## A. 60 seconds, no install
 
-UNKNOWN / NOT YET VERIFIED
+Open [`demo/index.html`](demo/index.html) in any browser (double-click it — it is
+a self-contained file with relative screenshots).
 
-## Before starting
+You are looking at the Truth Console for the healed run:
 
-Required browser/runtime:
-Account or wallet:
-Permissions:
-API keys or external credentials:
-Seed data:
-Network/service dependencies:
-What a judge can access without the builder:
-What is unavailable or private:
+- the policy stamp (`PASS` or `FAIL`) and the four tallies,
+- one row per documented promise, each with the doc quote, the verdict, and the
+  real Chrome screenshot,
+- the closed-loop timeline, the guard decision, and the diff,
+- the Kane policy gates with expected vs actual values.
 
-Do not expose secrets or require private credentials without a permitted judge-access path.
+`demo/README.md` records which run this snapshot came from.
 
-## Fast path — first meaningful result
+## B. 5 minutes, run the truth gate yourself
 
-| Step | Exact action | Expected system behavior | Visible result | Claim IDs / evidence | Actual rehearsal |
-|---|---|---|---|---|---|
-| 1 | Open the live app or follow the setup below | UNKNOWN | UNKNOWN | UNKNOWN | NOT RUN |
-| 2 | Complete required setup/input | UNKNOWN | UNKNOWN | UNKNOWN | NOT RUN |
-| 3 | Perform the core action | UNKNOWN | UNKNOWN | UNKNOWN | NOT RUN |
-| 4 | Inspect the product payoff | UNKNOWN | UNKNOWN | UNKNOWN | NOT RUN |
-| 5 | Open the supporting proof | UNKNOWN | UNKNOWN | UNKNOWN | NOT RUN |
+Requirements: Node 22+, Chrome, and Kane CLI v0.10.5 authenticated as your own
+account (`kane-cli --version`).
 
-## Local reproduction
+```bash
+npm ci
+npm run demo:app          # terminal 1, http://localhost:4177
+```
 
-Use this path when the live app is unavailable or when source-level verification is required.
+```bash
+node bin/proseproof.js check \
+  --docs examples/northstar-ledger/README.md \
+  --url http://localhost:4177
+```
 
-Prerequisites:
-Repository revision/commit:
-Clean-checkout setup:
-Configuration:
-Commands:
-Expected output:
-External dependencies:
-Known failure conditions:
+Expected, on the deliberately broken baseline:
 
-Record the exact commands and environment used. If a clean checkout was not tested, say so.
+```text
++ N-01  Sign in                            PROVEN
++ N-02  Use the Show filter and choose Paid PROVEN
++ N-03  Click New Invoice                  PROVEN
+x N-04  Click Export CSV                   APP_BUG    README.md:25
+! N-05  Open Invoices and read the monthly summary  DOC_DRIFT  README.md:26
 
-UNKNOWN / NOT YET VERIFIED
+x Kane policy FAIL  (proseproof-truth-gate)
+· 4/5 documented promises proven in Chrome · 1 app bug(s) caught · 1 documentation drift(s) caught
+```
 
-## What to inspect and why
+Exact counts can vary by one when Kane's own replay misreads a page it already
+verified; those rows are labelled `HARNESS` and explained, never counted as lies.
+Exit code is `1` because the policy failed.
 
-| Product capability or differentiator | Where to find it | What it demonstrates | Expected observation | Evidence reference |
-|---|---|---|---|---|
-| UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN |
+Inspect it:
 
-## Sponsor and technical verification
+```bash
+node bin/proseproof.js report --port 4178
+```
 
-Sponsor technology:
-Actual integration point:
-What the judge can observe:
-What evidence confirms use:
-What would be false or overstated:
-Repository files/tests/logs to inspect:
+The console shows the 500 from `GET /api/export`, the failing request, the
+screenshot at the moment of failure, and the `"Collected this month"` copy that
+contradicts the README.
 
-UNKNOWN / NOT YET VERIFIED
+## C. 15 minutes, watch the closed loop
 
-## Reset and repeatability
+Add an agent (optional; `PROSEPROOF_AGENT=recipe` works for the label drift only):
 
-Reset command or UI action:
-Required initial state:
-Expected reset result:
-Repeat count/rehearsal:
-Known non-determinism:
-Fallback if the live dependency fails:
+```bash
+export PROSEPROOF_AGENT=llm
+export PROSEPROOF_LLM_BASE_URL=https://api.vultrinference.com/v1
+export PROSEPROOF_LLM_API_KEY=<key>
+export PROSEPROOF_LLM_MODEL=deepseek-v4.1-flash-1017
+```
 
-UNKNOWN / NOT YET VERIFIED
+```bash
+node bin/proseproof.js heal \
+  --docs examples/northstar-ledger/README.md \
+  --url http://localhost:4177 \
+  --health-url http://localhost:4177/api/health \
+  --source examples/northstar-ledger \
+  --redact <your-name> --redact <your-email>
+```
 
-## Evidence map
+What should happen, in order:
 
-| Claim ID | Canonical claim | Status | Evidence artifact/link | How a judge can inspect it |
-|---|---|---|---|---|
-| UNKNOWN | UNKNOWN | UNPROVEN | NONE | UNKNOWN |
+1. the first Kane run fails the policy,
+2. triage names `N-04` an `APP_BUG` and `N-05` a `DOC_DRIFT`,
+3. the guard self-test rejects a synthetic patch that deletes `N-05`,
+4. the agent edits `server.js` (`String(invoice.number).padStart(...)`) and the
+   README label, the fixture reloads,
+5. Kane re-runs the same docs and the policy passes,
+6. the report keeps both runs, the diff, the patch log, and the guard decision.
 
-## Cross-artifact consistency
+The second run's claims should be `5/5 PROVEN` (or `4/5` with one `HARNESS` row
+if Kane's replay misreads the table again — re-run `heal` after `npm run
+demo:reset` for a clean take).
 
-| Claim ID | Landing page section | README section | Demo beat/timestamp | Walkthrough step | Evidence/status | Consistent? |
-|---|---|---|---|---|---|---|
-| UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | NOT CHECKED |
+Reset between attempts:
 
-The wording may differ for audience and format, but the meaning, scope, metrics, certainty, integration status, and limitations must agree.
+```bash
+npm run demo:reset   # git checkout of the fixture + assertions that it is broken
+```
 
-## Limitations and honest boundaries
+## The anti-cheat guard, in isolation
 
-Unimplemented or blocked capabilities:
-Simulated behavior and labels:
-Private/unavailable dependencies:
-Evidence gaps:
-What this walkthrough does not prove:
+```bash
+node bin/proseproof.js guard --docs examples/northstar-ledger/README.md
+```
 
-UNKNOWN / NOT YET VERIFIED
+It feeds a promise-deleting patch through the same guard that protects every
+agent edit and prints the rejection. This is a self-test and is labelled as one
+in the report. It is not a recording of a model choosing to cheat.
 
-## Judge-readiness checklist
+## Verify the published evidence
 
-- [ ] An unfamiliar judge can identify the target user, problem, solution, and differentiator quickly.
-- [ ] The landing page links to the real product, repository, demo, and relevant evidence.
-- [ ] README setup, configuration, run, and test instructions are accurate.
-- [ ] A clean checkout or isolated reproduction has been tested, or the blocker is explicit.
-- [ ] The fast path reaches the real product payoff.
-- [ ] Expected results are observable and match actual behavior.
-- [ ] Claims across landing page, README, demo, walkthrough, and submission match EVIDENCE.md.
-- [ ] Sponsor integration is demonstrated rather than merely named.
-- [ ] Reset, repeatability, and fallback are documented and rehearsed.
-- [ ] Known limitations and simulations are explicit.
-- [ ] Links, screenshots, commands, and responsive pages are checked in the judge-facing environment.
+```bash
+node bin/proseproof.js verify demo/evidence/<pack>.evidence
+# Valid (finalized)
 
-## Rehearsal findings
+kane-cli evidence validate demo/evidence/<pack>.evidence --profile L1 --json
+# "valid": true
+```
 
-Reviewer:
-Date:
-Environment:
-Steps completed:
-Actual time:
-Confusion or dead ends:
-Unexpected behavior:
-Corrections:
-Evidence/capture paths:
+The pack in `demo/` is the redacted copy. Identity fields were rewritten before
+publication; the screenshots and step records are untouched.
 
-UNKNOWN / NOT YET VERIFIED
+## If Kane CLI or Chrome is unavailable
 
-## Verdict
+Use path A. The committed report, screenshots, and pack are the proof. The
+repository does not ask a reviewer to install anything to see the result.
 
-PASS / FAIL / BLOCKED
+## What to look for (and what not to)
 
-Reason:
-Unresolved P0/P1 gaps:
-Exact corrective actions:
-Owners:
-Re-test evidence:
-Last verified revision/date:
+| Judging question | Where the answer is |
+| --- | --- |
+| Does it work end to end? | path B or C, or the committed `demo/report.json` |
+| Did Kane CLI catch something real? | `N-04` 500 with the failing request and screenshot; `N-05` copy contradiction |
+| Did the agent and Kane CLI communicate? | the heal timeline: Kane verdict → triage → patch → second Kane run |
+| Is the claim honest? | `HARNESS` rows, refusal paths, and the limitations section |
 
-UNKNOWN / NOT YET VERIFIED
+Known limits, stated up front: the doc needs a structured "Try it" section; only
+browser-observable promises are checked; Kane authentication is interactive, so
+the GitHub Action targets a self-hosted runner.

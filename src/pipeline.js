@@ -34,7 +34,7 @@ export function resolveDocs(rootDir, docPaths) {
   return resolved.map((file) => ({ path: file, content: readText(file, '') }));
 }
 
-export function planProject({ rootDir, docPaths, url, outDir }) {
+export function planProject({ rootDir, docPaths, url, outDir, fresh = false }) {
   const docs = resolveDocs(rootDir, docPaths);
   if (!docs.length) throw new Error('No documentation files found. Pass --docs README.md');
   const extracted = extractClaims({ docs, baseUrl: url });
@@ -52,6 +52,16 @@ export function planProject({ rootDir, docPaths, url, outDir }) {
   const keep = new Set(compiled.files.map((file) => path.basename(file)));
   for (const file of listFiles(compiled.testsDir, (entry) => entry.endsWith('_test.md'))) {
     if (!keep.has(path.basename(file))) rmrf(file);
+  }
+
+  // --fresh drops Kane's recordings so every promise is authored from scratch.
+  // Use it when a replay inherited a harness failure and the page itself is fine.
+  if (fresh) {
+    for (const entry of fs.readdirSync(compiled.testsDir, { withFileTypes: true })) {
+      if (entry.isDirectory() && entry.name.startsWith('output-')) {
+        rmrf(path.join(compiled.testsDir, entry.name));
+      }
+    }
   }
 
   writeJson(path.join(suiteDir, 'claims.json'), {
@@ -76,7 +86,7 @@ export function planProject({ rootDir, docPaths, url, outDir }) {
   };
 }
 
-export async function executeSuite({ rootDir, files, policyPath, name = 'proseproof', parallel = 2, timeoutMs = 1_500_000 }) {
+export async function executeSuite({ rootDir, files, policyPath, name = 'proseproof', parallel = 2, timeoutMs = 1_500_000, onMember }) {
   const lint = await lintPolicy(policyPath, { cwd: rootDir });
   if (lint.code !== 0) {
     const problems = (lint.report?.files || []).flatMap((file) => file.diagnostics || []);
@@ -96,7 +106,23 @@ export async function executeSuite({ rootDir, files, policyPath, name = 'prosepr
   ];
 
   const startedAt = Date.now();
-  const result = await runKane(args, { cwd: rootDir, timeoutMs });
+  const result = await runKane(args, {
+    cwd: rootDir,
+    timeoutMs,
+    onLine: (line) => {
+      if (!onMember || !line.startsWith('{')) return;
+      let event;
+      try {
+        event = JSON.parse(line);
+      } catch {
+        return;
+      }
+      if (event?.type !== 'testrun_member_event') return;
+      const phase = event.event?.type;
+      if (phase === 'run_start') onMember({ phase: 'start', member: event.member });
+      if (phase === 'run_end') onMember({ phase: 'end', member: event.member, run: event.event });
+    },
+  });
   const events = parseLines(result.lines);
   const verdict = findEvent(events, 'verdict');
   const summary = findEvent(events, 'testrun_summary');
@@ -187,8 +213,8 @@ export async function analyzePack({ rootDir, packPath, packPaths, runDir, claims
   return { pack, triage, summary: summarizeTriage(triage) };
 }
 
-export async function runCheck({ rootDir, docPaths, url, mode = 'check', parallel = 2, onEvent }) {
-  const plan = planProject({ rootDir, docPaths, url });
+export async function runCheck({ rootDir, docPaths, url, mode = 'check', parallel = 2, fresh = false, onEvent }) {
+  const plan = planProject({ rootDir, docPaths, url, fresh });
   const runId = `${timestampId()}-${mode}`;
   const runDir = ensureDir(path.join(rootDir, RUNS_DIR, runId));
 
@@ -203,6 +229,7 @@ export async function runCheck({ rootDir, docPaths, url, mode = 'check', paralle
     name: `proseproof-${mode}`,
     parallel,
     timeoutMs: 1_500_000,
+    onMember: (info) => onEvent?.({ type: 'member', ...info }),
   });
 
   onEvent?.({ type: 'execution', execution });
