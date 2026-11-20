@@ -42,6 +42,7 @@ jobs:
           node bin/proseproof.js check \
             --docs "${{ inputs.docs }}" \
             --url "${{ inputs.url }}" \
+            --headless \
             ${{ inputs.health_url && format('--health-url "{0}"', inputs.health_url) || '' }}
       - name: Upload the sealed truth report
         if: always()

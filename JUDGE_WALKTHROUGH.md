@@ -21,6 +21,10 @@ You are looking at the Truth Console for the healed run:
 
 `demo/README.md` records which run this snapshot came from.
 
+No account, API key, login, or hosted service is needed for this path. The demo
+app's own sign-in is printed on its card (`demo@northstar.dev` / `demo1234`), and
+the fixture resets on every restart.
+
 ## B. 5 minutes, run the truth gate yourself
 
 Requirements: Node 22+, Chrome, and Kane CLI v0.10.5 authenticated as your own
