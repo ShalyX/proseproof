@@ -35,9 +35,12 @@ function signInStep(setup) {
   const { email, password } = setup.credentials || {};
   const lines = ['## Sign in'];
   if (email && password) {
+    // Unquoted outcome on purpose: the authoring agent then checks the dashboard
+    // semantically instead of doing a strict label match that can read a stale
+    // frame right after the login redirect.
     lines.push(
       `Go to the app. If a sign-in form is shown, sign in with "${email}" and "${password}" and submit it. ` +
-        'This step is complete only when the "Invoices" heading is visible on the page.',
+        'The step is complete when the page shows the Invoices dashboard.',
     );
   } else {
     lines.push('Go to the app and verify the documented start page is visible.');

@@ -61,7 +61,7 @@ screenshots, and a redacted evidence pack that still passes
 `kane-cli evidence validate --profile L1`, so a reviewer can inspect the proof
 without running Chrome.
 
-## The three verdicts
+## The verdicts
 
 | Verdict | Evidence ProseProof requires | Who is wrong |
 | --- | --- | --- |
@@ -101,8 +101,8 @@ Prerequisites: Node 22+, Chrome, and an authenticated Kane CLI
 (`kane-cli --version` should print a version; `kane-cli login` if not).
 
 ```bash
-git clone <repository-url>
-cd "ProseProof - KaneCLI Online Hackathon"
+git clone https://github.com/ShalyX/proseproof
+cd proseproof
 npm ci
 
 # Terminal 1: the app under test
@@ -242,7 +242,7 @@ outputs, reset procedure, and the fallback if Kane CLI or Chrome is unavailable.
 - Implementation: end-to-end on the showcase (extract → run → triage → guard →
   repair → re-run → report → redacted evidence).
 - Last verified: see the run header in `demo/report.json`.
-- Tests: `npm test` (32 tests, no browser required).
+- Tests: `npm test` (37 tests, no browser required).
 - Deployment: local CLI and a self-contained Truth Console page.
 - Submission: KaneCLI Online Hackathon 2026.
 

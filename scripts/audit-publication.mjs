@@ -65,6 +65,8 @@ const findings = [];
 
 for (const file of files) {
   if (!/\.(md|js|mjs|cjs|json|ya?ml|txt|html|css)$/i.test(file)) continue;
+  // The audit owns the patterns it searches for; scanning itself always matches.
+  if (file === 'scripts/audit-publication.mjs') continue;
   if (!fs.existsSync(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
 
