@@ -140,6 +140,18 @@ node bin/proseproof.js heal \
 
 Reset the fixture between takes with `npm run demo:reset`.
 
+### Use it on your own repository
+
+```bash
+node bin/proseproof.js init --docs README.md --url http://localhost:3000
+# writes proseproof.config.json: docs, url, source roots, parallelism, report port
+node bin/proseproof.js check
+```
+
+`check` reads the config, so the command is the same every time. The document needs
+a "Try it" section with ordered steps and observable outcomes; the `source` roots
+are the only files the repair agent is allowed to edit.
+
 ## Key capabilities
 
 | Capability | Status | Where |

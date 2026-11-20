@@ -148,7 +148,7 @@ export async function main(argv) {
   const flags = parseArgs(argv.slice(1));
   const options = resolveOptions(flags, loadConfig(path.resolve(flags.cwd || process.cwd())));
 
-  if (!command || flags.help || command === 'help') {
+  if (!command || flags.help || command === 'help' || command === '--help' || command === '-h') {
     console.log(`
 ProseProof — executable browser truth gate for docs.
 

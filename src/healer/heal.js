@@ -10,6 +10,27 @@ import { writeJson, writeText, readText, listFiles, ensureDir, relativeTo } from
 const EXCLUDED = /(^|[\\/])(node_modules|\.git|\.proseproof|\.testmuai|spikes|demo|dist|coverage|output-)([\\/]|$)/i;
 const SOURCE_EXT = new Set(['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx', '.py', '.rb', '.go', '.html', '.css', '.json']);
 
+/**
+ * Keep the first run's screenshots next to the healed run's, so one published
+ * report can show the failure and the fix without mixing the two captures.
+ */
+export function copyBeforeShots(claims, fromRunDir, toRunDir) {
+  const from = path.join(fromRunDir, 'shots');
+  const to = path.join(toRunDir, 'shots');
+  if (!fs.existsSync(from)) return claims;
+  fs.mkdirSync(to, { recursive: true });
+  return claims.map((claim) => {
+    if (!claim.screenshot) return claim;
+    const name = `before-${claim.screenshot}`;
+    try {
+      fs.copyFileSync(path.join(from, claim.screenshot), path.join(to, name));
+    } catch {
+      return claim;
+    }
+    return { ...claim, screenshot: name };
+  });
+}
+
 export function collectSources(rootDir, patterns = []) {
   const roots = patterns.length ? patterns : ['.'];
   const out = [];
@@ -214,7 +235,7 @@ export async function heal({ rootDir, docPaths, url, source = [], healthUrl = nu
   second.report.before = {
     summary: beforeSummary,
     policy: first.report.policy,
-    claims: first.report.claims,
+    claims: copyBeforeShots(first.report.claims, first.runDir, second.runDir),
     runId: first.runId,
   };
   second.report.guard = guard;

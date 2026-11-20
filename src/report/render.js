@@ -57,14 +57,19 @@ function gateRows(report) {
   </tbody></table>`;
 }
 
-function claimRow(item) {
-  const cls = statusClass(item);
-  const screenshot = item.screenshot
-    ? `<img class="shot" src="shots/${escapeHtml(item.screenshot)}" alt="Real Chrome screenshot for ${escapeHtml(item.claimId)}" loading="lazy">`
+function claimRow(item, beforeItem) {
+  // On a healed run the interesting evidence is the first run's failure: that is
+  // what Kane caught and what the agent had to repair. Keep the final verdict
+  // beside it instead of replacing the story with an all-green sheet.
+  const shown = beforeItem && beforeItem.status !== 'PROVEN' ? beforeItem : item;
+  const cls = statusClass(shown);
+  const fixed = shown !== item;
+  const screenshot = shown.screenshot
+    ? `<img class="shot" src="shots/${escapeHtml(shown.screenshot)}" alt="Real Chrome screenshot for ${escapeHtml(item.claimId)}" loading="lazy">`
     : '<div class="shot shot-empty">no capture</div>';
 
-  const network = (item.evidence?.network || []).filter((line) => line.status >= 400).slice(0, 4);
-  const consoleLines = (item.evidence?.console || []).slice(0, 4);
+  const network = (shown.evidence?.network || []).filter((line) => line.status >= 400).slice(0, 4);
+  const consoleLines = (shown.evidence?.console || []).slice(0, 4);
 
   return `<details class="claim ${cls}">
   <summary>
@@ -72,7 +77,8 @@ function claimRow(item) {
     <span class="claim-main">
       <span class="claim-meta">
         <code class="cite">${escapeHtml(item.location || 'README.md')}</code>
-        <span class="pill ${cls}">${badgeLabel(item)}</span>
+        <span class="pill ${cls}">${badgeLabel(shown)}</span>
+        ${fixed ? `<span class="fixed">→</span><span class="pill is-proven">PROVEN</span>` : ''}
       </span>
       <span class="claim-title">${escapeHtml(item.title)}</span>
       <span class="claim-quote">${highlight(item.quote || item.promised)}</span>
@@ -84,21 +90,22 @@ function claimRow(item) {
       <div>
         <p class="detail-label">What the docs promised</p>
         <blockquote>${highlight(item.quote || item.promised)}</blockquote>
-        <p class="detail-label">Verdict</p>
-        <p class="verdict-line"><span class="pill ${cls}">${badgeLabel(item)}</span> ${escapeHtml(item.reason)}</p>
-        ${item.observed ? `<p class="detail-label">Observed in Chrome</p><p class="observed">“${escapeHtml(item.observed)}”</p>` : ''}
+        <p class="detail-label">${fixed ? 'First run' : 'Verdict'}</p>
+        <p class="verdict-line"><span class="pill ${cls}">${badgeLabel(shown)}</span> ${escapeHtml(shown.reason)}</p>
+        ${shown.observed ? `<p class="detail-label">Observed in Chrome</p><p class="observed">“${escapeHtml(shown.observed)}”</p>` : ''}
+        ${fixed ? `<p class="detail-label">After the repair</p><p class="verdict-line"><span class="pill is-proven">PROVEN</span> ${escapeHtml(item.reason)}</p>` : ''}
       </div>
       <div>
         <p class="detail-label">Kane CLI evidence</p>
         <dl class="evidence-list">
-          <div><dt>Classification</dt><dd>${escapeHtml(item.evidence?.kaneCategory || item.classification)}</dd></div>
-          ${item.evidence?.httpStatus ? `<div><dt>Network</dt><dd><code>${escapeHtml(item.evidence.httpStatus)}</code> ${escapeHtml(item.evidence.httpUrl || '')}</dd></div>` : ''}
-          <div><dt>Steps executed</dt><dd>${escapeHtml(item.evidence?.steps ?? '—')}</dd></div>
-          <div><dt>Confidence</dt><dd>${item.confidence ? Math.round(item.confidence * 100) + '%' : '—'}</dd></div>
+          <div><dt>Classification</dt><dd>${escapeHtml(shown.evidence?.kaneCategory || shown.classification)}</dd></div>
+          ${shown.evidence?.httpStatus ? `<div><dt>Network</dt><dd><code>${escapeHtml(shown.evidence.httpStatus)}</code> ${escapeHtml(shown.evidence.httpUrl || '')}</dd></div>` : ''}
+          <div><dt>Steps executed</dt><dd>${escapeHtml(shown.evidence?.steps ?? '—')}</dd></div>
+          <div><dt>Confidence</dt><dd>${shown.confidence ? Math.round(shown.confidence * 100) + '%' : '—'}</dd></div>
         </dl>
         ${network.length ? `<p class="detail-label">Failing requests</p><ul class="log">${network.map((line) => `<li><span class="code-red">${escapeHtml(line.status)}</span> ${escapeHtml(line.method)} ${escapeHtml(line.url)}</li>`).join('')}</ul>` : ''}
         ${consoleLines.length ? `<p class="detail-label">Console</p><ul class="log">${consoleLines.map((line) => `<li>${escapeHtml(line.text)}</li>`).join('')}</ul>` : ''}
-        ${item.evidence?.kaneSuggestion ? `<p class="detail-label">Kane suggested repair</p><p class="muted">${escapeHtml(item.evidence.kaneSuggestion)}</p>` : ''}
+        ${shown.evidence?.kaneSuggestion ? `<p class="detail-label">Kane suggested repair</p><p class="muted">${escapeHtml(shown.evidence.kaneSuggestion)}</p>` : ''}
       </div>
     </div>
   </div>
@@ -158,9 +165,20 @@ export function renderReport(report, { liveReload = false } = {}) {
   if (summary.unverifiable) parts.push(`${summary.unverifiable} unverifiable`);
   const found = parts.join(', ').replace(/, ([^,]*)$/, ' and $1');
 
-  const lede = pass
-    ? `Every documented promise passed in real Chrome. ${summary.proven} of ${summary.total} claims verified against ${escapeHtml(report.url)} with a sealed Kane CLI evidence pack.`
-    : `${summary.proven} of ${summary.total} documented promises survived real Chrome${found ? `. Caught: ${found}` : ''}.`;
+  const beforeSummary = report.before?.summary;
+  const beforeById = new Map((report.before?.claims || []).map((claim) => [claim.claimId, claim]));
+  const beforeParts = [];
+  if (beforeSummary) {
+    if (beforeSummary.lied) beforeParts.push(`${beforeSummary.lied} app bug${beforeSummary.lied === 1 ? '' : 's'}`);
+    if (beforeSummary.drifted) beforeParts.push(`${beforeSummary.drifted} drift`);
+    if (beforeSummary.platform) beforeParts.push(`${beforeSummary.platform} harness failure${beforeSummary.platform === 1 ? '' : 's'}`);
+  }
+
+  const lede = beforeSummary && pass
+    ? `First run: ${beforeSummary.proven} of ${beforeSummary.total} promises survived${beforeParts.length ? ` and ProseProof caught ${beforeParts.join(' and ')}` : ''}. After the repair, all ${summary.total} pass in real Chrome.`
+    : pass
+      ? `Every documented promise passed in real Chrome. ${summary.proven} of ${summary.total} claims verified against ${escapeHtml(report.url)} with a sealed Kane CLI evidence pack.`
+      : `${summary.proven} of ${summary.total} documented promises survived real Chrome${found ? `. Caught: ${found}` : ''}.`;
 
   return `<!doctype html>
 <html lang="en">
@@ -202,7 +220,9 @@ export function renderReport(report, { liveReload = false } = {}) {
       <div><span class="n amber">${summary.drifted}</span><span class="t">drift</span></div>
       <div><span class="n muted">${summary.unverifiable + (summary.platform || 0)}</span><span class="t">unjudged</span></div>
     </div>
-    <p class="v-note">${pass ? 'Every claim survived a real browser run.' : 'A documented promise is not true until Chrome agrees.'}${summary.platform ? ` ${summary.platform} run${summary.platform === 1 ? '' : 's'} could not be judged because Kane's harness failed; not counted as a lie.` : ''}</p>
+    <p class="v-note">${beforeSummary
+      ? `First run: ${beforeSummary.proven} proven · ${beforeSummary.lied} app bug${beforeSummary.lied === 1 ? '' : 's'} · ${beforeSummary.drifted} drift. After the repair: ${summary.proven}/${summary.total} proven.`
+      : pass ? 'Every claim survived a real browser run.' : 'A documented promise is not true until Chrome agrees.'}${summary.platform ? ` ${summary.platform} run${summary.platform === 1 ? '' : 's'} could not be judged because Kane's harness failed; not counted as a lie.` : ''}</p>
   </aside>
 </section>
 
@@ -210,7 +230,7 @@ export function renderReport(report, { liveReload = false } = {}) {
   <div class="section-head"><span class="num">01</span><h2>The redline sheet</h2><p>Each numbered promise is lifted from the docs with a line citation, then checked in Chrome. Open a row for the evidence.</p></div>
   <div class="sheet-head"><span>Claim</span><span>Promise &amp; verdict</span><span>Chrome</span></div>
   <div class="claims">
-    ${(report.claims || []).map(claimRow).join('\n')}
+    ${(report.claims || []).map((claim) => claimRow(claim, beforeById.get(claim.claimId))).join('\n')}
   </div>
 </section>
 
@@ -321,6 +341,7 @@ h1 em{font-style:italic;color:var(--cobalt)}
 .cite{font-size:10.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:3px}
 .claim-title{font-weight:600;font-size:16.5px;letter-spacing:-.01em}
 .claim-quote{color:var(--muted);font-size:13.5px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fixed{color:var(--faint);font-size:12px;margin-left:2px}
 mark{background:linear-gradient(transparent 52%, #F6E3A8 52%);color:inherit;padding:0 1px}
 .pill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:3px 7px;border:1px solid;border-radius:2px;white-space:nowrap}
 .pill.is-proven{color:var(--emerald);border-color:#BFDCD4;background:var(--emerald-soft)}
