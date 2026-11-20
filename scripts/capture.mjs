@@ -28,6 +28,7 @@ const arg = (name, fallback) => {
 };
 const width = arg('--width', 1440);
 const scale = arg('--scale', 2);
+const height = arg('--height', 900);
 const full = flags.includes('--full');
 
 const chromeCandidates = [
@@ -103,7 +104,7 @@ const call = (method, params) => send(method, params, sessionId);
 await call('Page.enable');
 await call('Emulation.setDeviceMetricsOverride', {
   width,
-  height: 900,
+  height,
   deviceScaleFactor: scale,
   mobile: width < 600,
 });
@@ -124,12 +125,12 @@ const metrics = await call('Page.getLayoutMetrics');
 const content = metrics.cssContentSize || metrics.contentSize;
 const clip = full
   ? { x: 0, y: 0, width, height: Math.ceil(content.height), scale: 1 }
-  : { x: 0, y: 0, width, height: 900, scale: 1 };
+  : { x: 0, y: 0, width, height, scale: 1 };
 const { data } = await call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: full, clip });
 
 fs.mkdirSync(path.dirname(path.resolve(outFile)), { recursive: true });
 fs.writeFileSync(outFile, Buffer.from(data, 'base64'));
-console.log(`${outFile}  ${width}px wide, ${full ? `${clip.height}px tall` : 'viewport'}  (${scale}x)`);
+console.log(`${outFile}  ${width}x${full ? clip.height : height}  (${scale}x)`);
 
 socket.close();
 browser.kill();

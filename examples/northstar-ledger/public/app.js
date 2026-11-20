@@ -59,7 +59,7 @@ form?.addEventListener('submit', async (event) => {
     <td class="mono">INV-${invoice.number}</td>
     <td>${invoice.customer}</td>
     <td class="muted">${invoice.issued}</td>
-    <td><span class="status ${invoice.status}">${invoice.status}</span></td>
+    <td><span class="status ${invoice.status}">${invoice.status === 'paid' ? 'Paid' : 'Unpaid'}</span></td>
     <td class="right mono">$${invoice.amount.toFixed(2)}</td>`;
   table.querySelector('tbody').prepend(row);
   dialog.close();

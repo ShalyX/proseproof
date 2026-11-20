@@ -104,7 +104,7 @@ tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #FCFBF8; }
 .right { text-align: right; }
 .muted { color: var(--muted); }
-.status { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid; }
+.status { font-size: 10px; letter-spacing: .08em; text-transform: none; padding: 3px 8px; border-radius: 999px; border: 1px solid; }
 .status.paid { color: var(--emerald); border-color: #BFDCD4; background: #EDF6F3; }
 .status.unpaid { color: var(--gold); border-color: #E7D6B4; background: #FBF5EA; }
 .empty { padding: 26px 22px; color: var(--muted); font-size: 13px; margin: 0; }

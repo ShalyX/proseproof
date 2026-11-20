@@ -37,6 +37,10 @@ output-*/
 scratch/
 *.local.json
 
+# Video production working files (raw captures, cards, takes)
+/video/
+*.mp4
+
 # OS
 .DS_Store
 Thumbs.db
