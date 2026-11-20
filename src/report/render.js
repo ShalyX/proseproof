@@ -309,10 +309,10 @@ h1 em{font-style:italic;color:var(--cobalt)}
 .section-head .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:9px}
 .section-head h2{font-family:var(--serif);font-weight:400;font-size:38px;letter-spacing:-.02em;margin:0 0 6px}
 .section-head p{grid-column:2;margin:0;color:var(--muted);max-width:68ch;font-size:14.5px}
-.sheet-head{display:grid;grid-template-columns:86px 1fr 190px;gap:18px;padding:0 18px 10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line-strong)}
+.sheet-head{display:grid;grid-template-columns:86px 1fr 250px;gap:18px;padding:0 18px 10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line-strong)}
 .claim{border-bottom:1px solid var(--line);background:transparent}
 .claim[open]{background:var(--card);border:1px solid var(--line);border-bottom:1px solid var(--line);margin:10px 0}
-.claim summary{display:grid;grid-template-columns:86px 1fr 190px;gap:18px;align-items:center;padding:18px;cursor:pointer;list-style:none}
+.claim summary{display:grid;grid-template-columns:86px 1fr 250px;gap:18px;align-items:center;padding:18px;cursor:pointer;list-style:none}
 .claim summary::-webkit-details-marker{display:none}
 .claim:hover summary{background:rgba(255,255,255,.62)}
 .claim-index{font-family:var(--mono);font-size:12px;color:var(--faint)}
@@ -328,7 +328,7 @@ mark{background:linear-gradient(transparent 52%, #F6E3A8 52%);color:inherit;padd
 .pill.is-drift{color:var(--amber);border-color:#EBD3AC;background:var(--amber-soft)}
 .pill.is-unknown{color:var(--muted);border-color:var(--line-strong);background:var(--paper)}
 .claim-thumb{justify-self:end}
-.shot{display:block;width:180px;height:104px;object-fit:cover;object-position:top;border:1px solid var(--line-strong);background:#fff;filter:saturate(.92)}
+.shot{display:block;width:250px;height:146px;object-fit:cover;object-position:top;border:1px solid var(--line-strong);background:#fff;filter:saturate(.92)}
 .shot-empty{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--faint)}
 .claim-detail{padding:6px 24px 28px 104px}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px}
@@ -339,7 +339,7 @@ mark{background:linear-gradient(transparent 52%, #F6E3A8 52%);color:inherit;padd
 .evidence-list{margin:0;display:flex;flex-direction:column;gap:8px}
 .evidence-list div{display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:13px}
 .evidence-list dt{color:var(--faint);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}
-.evidence-list dd{margin:0;word-break:break-word}
+.evidence-list dd{margin:0;word-break:break-word;overflow-wrap:anywhere}
 .log{margin:0;padding-left:16px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 .log li{margin-bottom:4px;word-break:break-all}
 .code-red{color:var(--crimson)}
@@ -362,6 +362,7 @@ mark{background:linear-gradient(transparent 52%, #F6E3A8 52%);color:inherit;padd
 .diff .hunk{color:#9DB7FF;display:block}
 .diff span:not(.add):not(.del):not(.hunk){display:block}
 .evidence-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:26px}
+.evidence-grid > *{min-width:0}
 .evidence-card{border:1px solid var(--line-strong);background:var(--card);padding:22px 24px}
 .gates{width:100%;border-collapse:collapse;font-size:12.5px}
 .gates th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:0 8px 8px 0;border-bottom:1px solid var(--line)}
@@ -382,6 +383,9 @@ footer .muted{margin-left:auto;color:var(--faint);font-family:var(--mono);font-s
   .claim-index{display:none}.claim-thumb{justify-self:start}
   .shot{width:100%;height:auto;max-height:220px}
   .evidence-grid{grid-template-columns:1fr}
+  .gates{display:block;overflow-x:auto}
+  .hero-meta dd,.v-policy{overflow-wrap:anywhere}
+  body{overflow-x:hidden}
   footer{flex-wrap:wrap}.footer .muted{margin-left:0}
   .section-head{grid-template-columns:1fr}.section-head .num{display:none}.section-head p{grid-column:1}
 }
