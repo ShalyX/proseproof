@@ -68,6 +68,11 @@ app.get('/', (req, res) => {
   </main>`));
 });
 
+app.get('/logout', (req, res) => {
+  res.setHeader('set-cookie', 'nl_session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax');
+  res.redirect('/');
+});
+
 app.post('/login', (req, res) => {
   const { email, password } = req.body || {};
   if (email === 'demo@northstar.dev' && password === 'demo1234') {
@@ -101,7 +106,7 @@ app.get('/dashboard', (req, res) => {
     </div>
     <div class="appbar-right">
       <span class="who">demo@northstar.dev</span>
-      <a class="btn ghost" href="/">Sign out</a>
+      <a class="btn ghost" href="/logout">Sign out</a>
     </div>
   </header>
 

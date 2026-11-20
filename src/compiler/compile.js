@@ -39,7 +39,8 @@ function signInStep(setup) {
     // semantically instead of doing a strict label match that can read a stale
     // frame right after the login redirect.
     lines.push(
-      `Go to the app. If a sign-in form is shown, sign in with "${email}" and "${password}" and submit it. ` +
+      `Go to the app. If the dashboard is already open, sign out first. ` +
+        `Then sign in with "${email}" and "${password}" and submit the form. ` +
         'The step is complete when the page shows the Invoices dashboard.',
     );
   } else {
