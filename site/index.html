@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProseProof — executable browser truth gate for docs</title>
+<meta name="description" content="ProseProof compiles README promises into Kane CLI browser checks in real Chrome, separates app bugs from doc drift, and drives your coding agent until a policy gate passes.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23141619'/><path d='M8 16.5l5 5 11-11' fill='none' stroke='%23FAF8F4' stroke-width='3'/></svg>">
+<style>
+  :root{
+    --paper:#FAF8F4;--card:#FFFFFF;--ink:#141619;--muted:#5B606B;--faint:#8A8F98;
+    --line:#E4E1DA;--line-strong:#C9C5BC;
+    --cobalt:#1D4ED8;--cobalt-soft:#EEF2FF;
+    --emerald:#0F766E;--emerald-soft:#E9F5F1;
+    --crimson:#BE123C;--crimson-soft:#FBEFF1;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:"Inter","Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+    --mono:"JetBrains Mono","Cascadia Code",Consolas,"SF Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  main{max-width:1120px;margin:0 auto;padding:0 40px}
+  header.top{display:flex;align-items:center;gap:14px;padding:22px 40px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(250,248,244,.92);backdrop-filter:blur(8px);z-index:5}
+  header.top .mark{font-family:var(--serif);font-size:21px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+  header.top .mark svg{width:22px;height:22px;color:var(--cobalt)}
+  header.top nav{margin-left:auto;display:flex;gap:22px;font-size:14px}
+  header.top nav a{text-decoration:none;color:var(--muted)}
+  header.top nav a:hover{color:var(--ink)}
+  .hero{display:grid;grid-template-columns:1fr 330px;gap:54px;align-items:end;padding:74px 0 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 20px}
+  .eyebrow span{margin:0 8px;color:var(--line-strong)}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,5.6vw,68px);line-height:1.03;letter-spacing:-.035em;margin:0 0 24px}
+  h1 em{font-style:italic;color:var(--cobalt)}
+  .lede{font-size:18px;line-height:1.62;color:var(--muted);max-width:60ch;margin:0 0 30px}
+  .cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-size:14px;padding:11px 18px;text-decoration:none;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .btn:hover{opacity:.9}
+  .verdict{border:1px solid var(--ink);background:var(--card);padding:22px 22px 18px;position:relative}
+  .verdict::before{content:"";position:absolute;inset:4px;border:1px solid var(--line);pointer-events:none}
+  .verdict .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0}
+  .verdict .big{font-family:var(--serif);font-size:44px;line-height:1;margin:8px 0 12px;color:var(--emerald)}
+  .verdict p{margin:0;font-size:13px;color:var(--muted)}
+  .verdict .row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;margin-top:12px}
+  section{padding:56px 0;border-bottom:1px solid var(--line)}
+  .sec-head{display:grid;grid-template-columns:64px 1fr;gap:20px;align-items:start;margin-bottom:34px}
+  .sec-head .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:7px}
+  h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px}
+  .sec-head p{margin:0;color:var(--muted);font-size:15px;max-width:64ch}
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .card{border:1px solid var(--line);background:var(--card);padding:20px 20px 22px}
+  .card .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 10px}
+  .card h3{font-size:16px;margin:0 0 8px}
+  .card p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+  .loop{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);background:var(--card)}
+  .step{padding:18px 16px 20px;border-right:1px solid var(--line)}
+  .step:last-child{border-right:0}
+  .step .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .step h4{font-size:14px;margin:8px 0 6px}
+  .step p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+  .step.hot{background:var(--crimson-soft)}
+  .step.hot h4{color:var(--crimson)}
+  .step.ok{background:var(--emerald-soft)}
+  .step.ok h4{color:var(--emerald)}
+  .evidence{display:grid;grid-template-columns:1.15fr 1fr;gap:30px;align-items:start}
+  .shot{border:1px solid var(--line-strong);background:var(--card);overflow:hidden}
+  .shot img{display:block;width:100%;height:auto}
+  .shot figcaption{font-family:var(--mono);font-size:11px;color:var(--faint);padding:9px 12px;border-top:1px solid var(--line)}
+  .stamps{display:grid;gap:12px}
+  .stamp{border:1px solid var(--line);background:var(--card);padding:14px 16px;display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:center}
+  .stamp .badge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-align:center;padding:5px 0;border:1px solid}
+  .stamp .badge.bug{color:var(--crimson);border-color:var(--crimson);background:var(--crimson-soft)}
+  .stamp .badge.drift{color:#8A5A00;border-color:#E7D6B4;background:#FBF5EA}
+  .stamp .badge.harness{color:var(--faint);border-color:var(--line-strong)}
+  .stamp .badge.proven{color:var(--emerald);border-color:var(--emerald);background:var(--emerald-soft)}
+  .stamp p{margin:0;font-size:13px;color:var(--muted)}
+  .stamp strong{color:var(--ink);display:block;font-size:13.5px;margin-bottom:2px}
+  pre{margin:0;padding:14px 16px;background:var(--ink);color:#EDEBE6;font-family:var(--mono);font-size:12.5px;overflow:auto;line-height:1.7}
+  pre .c{color:#8A8F98}
+  pre .g{color:#7FD8C4}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+  .note{font-size:13px;color:var(--faint);margin:12px 0 0}
+  footer{padding:38px 0 64px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+  footer .muted{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  @media (max-width:900px){
+    main{padding:0 20px}header.top{padding:16px 20px}header.top nav{display:none}
+    .hero{grid-template-columns:1fr;gap:30px;padding:44px 0 40px}
+    .cols,.split,.evidence,.loop{grid-template-columns:1fr}
+    .loop .step{border-right:0;border-bottom:1px solid var(--line)}
+    .loop .step:last-child{border-bottom:0}
+    .sec-head{grid-template-columns:1fr}.sec-head .num{display:none}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="mark">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 16.5l5 5 9.5-10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+    ProseProof
+  </span>
+  <nav>
+    <a href="#loop">How it works</a>
+    <a href="#proof">Proof</a>
+    <a href="#start">Run it</a>
+    <a href="https://github.com/ShalyX/proseproof">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" style="border-bottom:1px solid var(--line)">
+    <div>
+      <p class="eyebrow">Executable docs <span>·</span> real Chrome <span>·</span> Kane CLI</p>
+      <h1>Your README is a promise.<br><em>Prove it in Chrome.</em></h1>
+      <p class="lede">ProseProof compiles the promises in your docs into Kane CLI browser checks, then tells you which one broke: the app, or the doc. When something fails, the evidence goes to your coding agent — and it has to pass Chrome again, under a policy gate, before anyone calls it fixed.</p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/ShalyX/proseproof">Get the repository</a>
+        <a class="btn ghost" href="https://github.com/ShalyX/proseproof/blob/master/JUDGE_WALKTHROUGH.md">Judge walkthrough</a>
+      </div>
+    </div>
+    <aside class="verdict">
+      <p class="lbl">Kane policy verdict</p>
+      <p class="big">PASS</p>
+      <p>Every documented promise passed in real Chrome, after the agent repaired what the first run exposed.</p>
+      <div class="row"><span>promises</span><span>5 / 5 proven</span></div>
+      <div class="row"><span>caught</span><span>1 app bug · 1 drift</span></div>
+      <div class="row"><span>evidence</span><span>sealed · L1 valid</span></div>
+    </aside>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">01</span><div>
+      <h2>A link checker cannot see a lie</h2>
+      <p>Static checks confirm that a URL resolves. They cannot confirm that clicking <strong>Export CSV</strong> produces a file, that a filtered table is actually filtered, or that the label in the screenshot is the label in the docs.</p>
+    </div></div>
+    <div class="cols">
+      <div class="card"><p class="k">What breaks</p><h3>Silent 500s</h3><p>A button returns an error the UI swallows. Links stay green; the flow is dead.</p></div>
+      <div class="card"><p class="k">What drifts</p><h3>Stale copy</h3><p>The app renamed a card six months ago. The README still promises the old one.</p></div>
+      <div class="card"><p class="k">What lies</p><h3>Green CI</h3><p>Tests pass because nobody asserts the thing the docs actually promised a user.</p></div>
+    </div>
+  </section>
+
+  <section id="loop">
+    <div class="sec-head"><span class="num">02</span><div>
+      <h2>One loop: docs → Chrome → agent → proof</h2>
+      <p>ProseProof writes the tests, Kane CLI runs them in real Chrome, and the failures come back as evidence a coding agent can act on — never as an excuse to rewrite the promise.</p>
+    </div></div>
+    <div class="loop">
+      <div class="step"><p class="n">01</p><h4>Extract</h4><p>Promises are read from the docs with file and line citations.</p></div>
+      <div class="step"><p class="n">02</p><h4>Compile</h4><p>Each promise becomes a Kane test plus a CEL policy gate.</p></div>
+      <div class="step"><p class="n">03</p><h4>Run</h4><p>Kane drives Chrome and records steps, network, console, screenshots.</p></div>
+      <div class="step hot"><p class="n">04</p><h4>Triage</h4><p>APP BUG, DOC DRIFT, or a harness failure that is never counted as a lie.</p></div>
+      <div class="step ok"><p class="n">05</p><h4>Heal</h4><p>An anti-cheat guard blocks deleted promises; Kane re-checks the repair.</p></div>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="sec-head"><span class="num">03</span><div>
+      <h2>What it caught on the demo app</h2>
+      <p>A small Express app with two planted lies: an export endpoint that throws, and a summary card labelled differently from its own README. Both are invisible to a link checker.</p>
+    </div></div>
+    <div class="evidence">
+      <figure class="shot">
+        <img src="assets/console.png" alt="ProseProof Truth Report showing five claims, the first-run app bug and doc drift, and the repaired verdicts">
+        <figcaption>Truth Report — real run, real Chrome, before and after</figcaption>
+      </figure>
+      <div class="stamps">
+        <div class="stamp"><span class="badge bug">APP BUG</span><p><strong>Export CSV returns 500</strong>The documented download never happens; the UI says nothing.</p></div>
+        <div class="stamp"><span class="badge drift">DOC DRIFT</span><p><strong>“Paid this month” vs “Collected this month”</strong>The app is right; the README is stale.</p></div>
+        <div class="stamp"><span class="badge harness">HARNESS</span><p><strong>Kane’s own automation bug</strong>Reported as unverifiable, never as a failed promise.</p></div>
+        <div class="stamp"><span class="badge proven">PROVEN</span><p><strong>5 / 5 after the repair</strong>Policy gate passes; the evidence pack is sealed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="sec-head"><span class="num">04</span><div>
+      <h2>Run it in a minute</h2>
+      <p>The repository ships a redacted proof snapshot, so you can read a real run before installing anything.</p>
+    </div></div>
+    <div class="split">
+      <div>
+        <pre><span class="c"># inspect a recorded run — no keys, no login</span>
+git clone https://github.com/ShalyX/proseproof
+cd proseproof
+npm ci
+npm run demo
+
+<span class="c"># point it at your own docs and app</span>
+node bin/proseproof.js init --docs README.md --url http://localhost:3000
+node bin/proseproof.js check</pre>
+      </div>
+      <div>
+        <p style="margin-top:0;font-size:15px;color:var(--muted)">Requirements: Node 22+, Chrome, and an authenticated <code>kane-cli</code>. The report is a static HTML file; nothing is uploaded anywhere, and evidence packs are redacted before they are shared.</p>
+        <p class="note">The committed snapshot is a real run against the bundled demo app. It is not a mock, and no metric on this page is synthetic.</p>
+        <div class="cta" style="margin-top:22px">
+          <a class="btn" href="https://github.com/ShalyX/proseproof">GitHub</a>
+          <a class="btn ghost" href="https://github.com/ShalyX/proseproof/blob/master/docs/HOW-IT-WORKS.md">How it works</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ProseProof · MIT licensed</span>
+    <span>Built with Kane CLI for the KaneCLI Online Hackathon</span>
+    <span class="muted">docs shouldn’t lie</span>
+  </footer>
+</main>
+</body>
+</html>

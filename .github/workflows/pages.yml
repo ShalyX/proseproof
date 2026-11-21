@@ -1,0 +1,38 @@
+name: Pages
+
+# Publishes the product page and the committed proof snapshot as one static site:
+#   /            -> site/index.html
+#   /demo/       -> demo/index.html (the recorded Truth Report)
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'site/**'
+      - 'demo/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp -r site/. _site/
+          if [ -d demo ]; then cp -r demo _site/demo; fi
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
