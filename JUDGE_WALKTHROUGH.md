@@ -55,7 +55,7 @@ x N-04  Click Export CSV                   APP_BUG    README.md:25
 ! N-05  Open Invoices and read the monthly summary  DOC_DRIFT  README.md:26
 
 x Kane policy FAIL  (proseproof-truth-gate)
-· 4/5 documented promises proven in Chrome · 1 app bug(s) caught · 1 documentation drift(s) caught
+· 3/5 documented promises proven in Chrome · 1 app bug(s) caught · 1 documentation drift(s) caught
 ```
 
 Exact counts can vary by one when Kane's own replay misreads a page it already
@@ -125,10 +125,10 @@ in the report. It is not a recording of a model choosing to cheat.
 ## Verify the published evidence
 
 ```bash
-node bin/proseproof.js verify demo/evidence/<pack>.evidence
+node bin/proseproof.js verify demo/evidence/redacted.evidence
 # Valid (finalized)
 
-kane-cli evidence validate demo/evidence/<pack>.evidence --profile L1 --json
+kane-cli evidence validate demo/evidence/redacted.evidence --profile L1 --json
 # "valid": true
 ```
 

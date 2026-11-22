@@ -1,8 +1,18 @@
-# EVIDENCE
+# Evidence
 
-## Evidence plan status
+Every claim below was executed on the recorded run, not planned. The two runs
+this file cites are committed as artifacts in [`demo/`](demo/) and in the
+operator's run store; the redacted pack is the copy a judge can inspect offline.
 
-PLANNED (2026-11-18T14:52:00Z) — Claims registered at `EVIDENCE_PLAN`; execution artifacts to be captured during `TECHNICAL_DERISK`, `BUILD_LOOP`, and `PROOF_ENGINE`.
+- Code state: the commit that contains this file
+- Machine: Windows 11, Node v24.14.0, Chrome `157.0.8103.79`, `kane-cli` 0.10.5
+- Showcase app: `examples/northstar-ledger` at `http://localhost:4177`
+- Docs under test: `examples/northstar-ledger/README.md` (5 promises)
+- Repair agent: `deepseek-v4.1-flash-1017` through an OpenAI-compatible endpoint
+  (Vultr Inference), with the deterministic `recipe` fallback available
+- Runs:
+  - first check `20261121-204300-check` — started 19:43:00Z, finished 19:52:39Z (9m32s), exit 1
+  - healed run `20261121-205247-heal` — started 19:52:47Z, finished 19:59:25Z (6m13s), exit 0
 
 ## Critical claim registry
 
@@ -11,149 +21,175 @@ id: C-01
 claim: ProseProof extracts discrete, line-cited browser-verifiable promises from README.md / markdown docs and compiles them into runnable Kane CLI *_test.md specs and a lint-clean CEL policy file.
 criticality: CRITICAL
 category: product
-status: UNPROVEN
-proof_standard: Automated test + real `kane-cli evidence lint-policy` exit 0 on compiled `proseproof.policy.yaml` + inspected `claims.json` & `*_test.md` artifacts.
-method: Run `proseproof plan` on `examples/northstar-ledger/README.md` and run unit/integration tests.
+status: PROVEN
+proof_standard: `proseproof plan` emits one `_test.md` per promise with a `source=README.md:<line>` citation, plus a policy file that `kane-cli evidence lint-policy` accepts.
+method: `node bin/proseproof.js plan --docs examples/northstar-ledger/README.md --url http://localhost:4177` then `kane-cli evidence lint-policy .proseproof/suite/proseproof.policy.yaml --json`.
 owner: Engineering / Proof
-artifact: TBD
-environment: Windows 11, Node 24.14.0, kane-cli 0.10.5+
-observed_at: PENDING
-limitations: Extracts user-facing web/API onboarding promises; pure library/algorithm docs without web flows classify as UNVERIFIABLE.
-judge_location: README.md, Truth Console, JUDGE_GUIDE.md
+artifact: `.proseproof/suite/tests/N-01..N-05_test.md`, `.proseproof/suite/claims.json`, `.proseproof/suite/proseproof.policy.yaml`
+environment: Windows 11, Node 24.14.0, kane-cli 0.10.5
+observed_at: 2026-11-21T19:52:47Z (suite file mtimes), reused verbatim by both runs
+limitations: Extracts promises from a structured "Try it" section; docs describing a library API without a browser flow are out of scope.
+judge_location: README.md "What ProseProof does", JUDGE_WALKTHROUGH.md path B, demo/report.json `claims[].citation`
 related_rubric: Ships (25%), Craft (25%)
 ```
 
 ```text
 id: C-02
-claim: ProseProof runs real Chrome browser checks via `kane-cli` and catches real documented failures—including silent 5xx API errors, console errors, and drifted UI labels—that static markdown link checkers miss.
+claim: ProseProof runs real Chrome checks through `kane-cli` and catches documented failures that static link checks miss — a silent 500 on a documented export, and a UI label that contradicts the docs.
 criticality: CRITICAL
 category: sponsor
-status: UNPROVEN
-proof_standard: Reproducible `kane-cli` execution output (NDJSON + exit code 1), sealed `.evidence` pack, and `kane-cli evidence verdict --policy` JSON showing `result: fail` against `examples/northstar-ledger` baseline.
-method: Run `proseproof check` against `examples/northstar-ledger` (`broken-baseline`) + compare against static link check.
+status: PROVEN
+proof_standard: The first run's sealed pack contains the failing step, the `GET /api/export` 500 with request/response evidence, and a policy verdict of `fail` with two blocking gates.
+method: `node bin/proseproof.js check --docs examples/northstar-ledger/README.md --url http://localhost:4177` against the broken baseline; inspect `demo/report.json` (published from the healed run's `before` block).
 owner: Proof / Engineering
-artifact: TBD
-environment: Windows 11, Chrome stable, kane-cli 0.10.5+
-observed_at: PENDING
-limitations: Requires reachable local/live HTTP URL and Chrome binary.
-judge_location: Landing overview, README.md, Demo S01/S03, Truth Console
-related_rubric: Prerequisite Bar 2, Verified (25%, 1st tie-breaker)
+artifact: `.proseproof/runs/20261121-204300-check/report.json`; evidence `62420469-a313-4c61-8bee-066e831703a8`; `demo/report.json` → `before`
+environment: Windows 11, Chrome 157, kane-cli 0.10.5, headless
+observed_at: 2026-11-21T19:52:39Z (report written)
+limitations: Requires a reachable HTTP URL and a Chrome binary; a headed Chrome needs a live desktop session.
+judge_location: JUDGE_WALKTHROUGH.md path B, demo/index.html "The redline sheet", README.md "See it working"
+related_rubric: Verified (25%, first tie-breaker)
 ```
 
 ```text
 id: C-03
-claim: ProseProof accurately classifies Kane failures as APP_BUG vs DOC_DRIFT and blocks agent patches that attempt to pass by deleting or weakening README promises (Anti-Cheat Guard).
+claim: ProseProof separates `APP_BUG` from `DOC_DRIFT` using the failure evidence, keeps harness failures in their own `PLATFORM_ERROR` class, and rejects agent patches that delete or weaken a documented promise.
 criticality: CRITICAL
 category: product
-status: UNPROVEN
-proof_standard: Automated unit + negative anti-cheat test suite plus real showcase classification output (`APP_BUG` for broken export 500; `DOC_DRIFT` for renamed button label).
-method: Run `npm test` (triage + anti-cheat test cases) and inspect `proseproof heal` triage artifact.
+status: PROVEN
+proof_standard: The first run classifies N-04 `APP_BUG` from a 5xx on a documented flow and N-05 `DOC_DRIFT` from a quoted label mismatch; the guard rejects a promise-deleting patch with `CLAIM_REMOVED` and `CLAIM_COUNT_DROPPED`; the unit suite pins all four verdicts.
+method: Inspect `20261121-204300-check/report.json`; run `node bin/proseproof.js guard --docs examples/northstar-ledger/README.md`; run `npm test`.
 owner: Engineering / QA
-artifact: TBD
+artifact: `.proseproof/runs/20261121-204300-check/report.json` (`claims[3]`, `claims[4]`); `.proseproof/runs/20261121-205247-heal/report.json` (`guard`); `tests/triage.test.js`, `tests/guard.test.js`
 environment: Node 24.14.0
-observed_at: PENDING
-limitations: Anti-cheat guard enforces structural claim-retention & negative-assertion preservation; subtle semantic rewrites remain flagged as warnings for review.
-judge_location: README.md, Demo S04, Truth Console
+observed_at: 2026-11-21T19:59:35Z (healed report written)
+limitations: The guard enforces claim retention and negative-assertion preservation; a subtle semantic rewrite is still surfaced as a warning for human review.
+judge_location: README.md "The verdicts" and "The refusal", demo/index.html "The closed loop"
 related_rubric: Verified (25%), Craft (25%)
 ```
 
 ```text
 id: C-04
-claim: ProseProof closes the agent loop (`Kane failure .evidence -> agent diagnosis & patch -> Kane re-verify`) and flips the failing showcase app and README from `POLICY FAIL` to `POLICY PASS` in real Chrome.
+claim: ProseProof closes the loop — Kane failure evidence → triaged repair by an agent → second Kane run — and flips the showcase from policy FAIL to policy PASS with 5/5 promises proven.
 criticality: CRITICAL
 category: sponsor
-status: UNPROVEN
-proof_standard: Full `proseproof heal` run log showing: (1) failing `.evidence` + `verdict: fail`, (2) generated git patch repairing source + doc drift, (3) re-run `kane-cli` + `evidence verdict` flipping to `verdict: pass`.
-method: End-to-end live run on `examples/northstar-ledger` with OpenAI-powered agent loop (plus deterministic fallback check).
+status: PROVEN
+proof_standard: One `proseproof heal` run records the failing check, the accepted patches, the exact diff, the re-run, and a `pass` verdict with zero failed gates.
+method: `node bin/proseproof.js heal --docs examples/northstar-ledger/README.md --url http://localhost:4177 --health-url http://localhost:4177/api/health --source examples/northstar-ledger --parallel 2 --fresh --headless --redact <account email> --redact <account name>`.
 owner: Engineering / Proof
-artifact: TBD
-environment: Windows 11, Chrome stable, kane-cli 0.10.5+, OpenAI API
-observed_at: PENDING
-limitations: Live AI patching requires `OPENAI_API_KEY` or configured `--agent-cmd`; offline judge replay uses committed sealed packs.
-judge_location: README.md, Demo S04, Truth Console, JUDGE_GUIDE.md
-related_rubric: Prerequisite Bar 3, Closed loop (25%, 2nd tie-breaker), Ships (25%)
+artifact: `.proseproof/runs/20261121-205247-heal/report.json`; diff touches `examples/northstar-ledger/server.js` and `examples/northstar-ledger/README.md`; agent patches recorded in `report.agent.patches`; evidence `d94bad9a-dffb-4e4c-928e-9671d544e6ba` (sealed)
+environment: Windows 11, Chrome 157, kane-cli 0.10.5 (headless), deepseek-v4.1-flash-1017
+observed_at: 2026-11-21T19:59:25Z (run finished)
+limitations: The live agent needs an OpenAI-compatible endpoint or `--agent-cmd`; the deterministic recipe fallback handles quoted-label drift only. Judges replay the committed pack instead.
+judge_location: JUDGE_WALKTHROUGH.md path C, demo/index.html "The repair", video scene S05
+related_rubric: Closed loop (25%, second tie-breaker), Ships (25%)
 ```
 
 ```text
 id: C-05
-claim: ProseProof redacts sensitive account/session metadata from `.evidence` packs before public sharing while preserving `kane-cli evidence validate --profile L1` validity.
+claim: ProseProof rewrites account and session identity out of a sealed `.evidence` pack before publication while the pack still passes `kane-cli evidence validate --profile L1`.
 criticality: CRITICAL
 category: technical
-status: UNPROVEN
-proof_standard: Redacted `.evidence` files pass `kane-cli evidence validate <file> --profile L1` (`valid: true`) and secret/PII grep scan returns zero hits (no email, access key, org token).
-method: Run ProseProof redactor on live `.evidence` packs, execute `kane-cli evidence validate --profile L1`, and run secret scan.
+status: PROVEN
+proof_standard: The published pack validates at L1 with no diagnostics, the rewritten fields no longer carry the recording account, and the committed snapshot contains no local machine paths.
+method: `node bin/proseproof.js verify demo/evidence/redacted.evidence` and `kane-cli evidence validate demo/evidence/redacted.evidence --profile L1 --json`; scan `demo/` for the recording identity and for `C:\Users\`.
 owner: Proof / QA
-artifact: TBD
-environment: kane-cli 0.10.5+
-observed_at: PENDING
-limitations: Redacted packs remove author email/org/share-token fields; L1 structural/hash validation passes while cloud Test Manager upload links are stripped.
-judge_location: README.md, Demo S05, Truth Console
-related_rubric: Craft (25%), Security/Publication Hygiene
+artifact: `demo/evidence/redacted.evidence` (5046393 bytes) → `{"valid":true,"status":"finalized","diagnostics":[]}`; `demo/report.json` written through `scripts/publish-demo.mjs`
+environment: kane-cli 0.10.5
+observed_at: 2026-11-22T06:41:04Z (validate), 2026-11-21T20:01:02Z (verify)
+limitations: Redaction rewrites known identity fields and caller-supplied literals; it is not a general-purpose secret scanner, which is why `npm run audit` runs before publication.
+judge_location: README.md "Security and privacy", demo/README.md, JUDGE_WALKTHROUGH.md "Verify the published evidence"
+related_rubric: Craft (25%)
 ```
 
 ```text
 id: C-06
-claim: Automated unit and integration tests verify extractor, triage, anti-cheat guard, redactor, and healer state-machine behavior without mocks hiding contract drift.
+claim: Automated tests pin the extractor, compiler, triage, anti-cheat guard, redactor, and healer state machine without a browser.
 criticality: IMPORTANT
 category: reliability
-status: UNPROVEN
-proof_standard: Passing `npm test` output with exact test count and real committed Kane output fixture assertions.
-method: Run `npm test` across clean repo state.
+status: PROVEN
+proof_standard: `npm test` completes with 37 passing tests and 0 failures on a clean checkout; the fixtures are real Kane results committed under `tests/fixtures/`.
+method: `npm test`
 owner: Engineering / QA
-artifact: TBD
-environment: Node 24.14.0
-observed_at: PENDING
-limitations: Unit tests mock external LLM/CLI calls while integration tests exercise real `kane-cli` & real Chrome.
-judge_location: README.md, JUDGE_GUIDE.md
+artifact: `tests/*.test.js`, `tests/fixtures/*`; output archived as `video/out/tests.txt` during the recording
+environment: Node 24.14.0, Windows 11
+observed_at: 2026-11-21T19:24:06Z
+limitations: Unit tests stub the LLM and CLI boundary; real Kane and Chrome are exercised by the recorded runs above, not by `npm test`.
+judge_location: README.md "Project status", `.github/workflows/ci.yml`
 related_rubric: Craft (25%), Ships (25%)
 ```
 
 ```text
 id: C-07
-claim: Judges can inspect the complete Before/After proof in <15 seconds via `npm run demo` without API keys or TestMu AI login, or run the live CLI against the showcase app or any URL.
+claim: A judge can inspect the complete before/after proof in seconds without an account, API key, or Kane login, and can then run the same CLI against the showcase or their own docs.
 criticality: CRITICAL
 category: product
-status: UNPROVEN
-proof_standard: Clean rehearsal timing of `npm run demo` (<15s) and verified Truth Console rendering across desktop (1440×900) and mobile (390×844) viewports.
-method: Execute `npm run demo` + inspect rendered Truth Console via browser capture.
+status: PROVEN
+proof_standard: `demo/index.html` renders the published run from disk with relative screenshots; `proseproof demo` serves it over HTTP and the report plus a screenshot return 200; the same page is legible at 1440 px and 390 px.
+method: `node bin/proseproof.js demo --port 4180` + HTTP GET of `/` and `/shots/N-04.jpg`; desktop and narrow-viewport captures with `scripts/capture.mjs`.
 owner: Product Storyteller / Visual QA
-artifact: TBD
-environment: Windows 11, Chrome
-observed_at: PENDING
-limitations: `npm run demo` replays committed redacted `.evidence` packs offline; live `check`/`heal` requires `kane-cli` auth + LLM key.
-judge_location: README.md, Demo S06, JUDGE_GUIDE.md
-related_rubric: Craft (25%), Submission Judge-Run Requirement
+artifact: `demo/index.html`, `demo/report.json`, `demo/shots/` (10 images), `demo/evidence/redacted.evidence`, `site/index.html`
+environment: Windows 11, Chrome 157
+observed_at: 2026-11-22T06:55:27Z
+limitations: The offline snapshot replays one recorded run; live `check`/`heal` needs Kane CLI, Chrome, and (for app bugs) a model endpoint.
+judge_location: JUDGE_WALKTHROUGH.md path A, README.md "Quickstart", `demo/README.md`
+related_rubric: Craft (25%), submission judge-run requirement
 ```
 
 ```text
 id: C-08
-claim: All judge-facing claims across landing page, README.md, JUDGE_GUIDE, demo video, and submission form are consistent with EVIDENCE.md and contain no fabricated metrics or leaked secrets.
+claim: Every judge-facing claim on the landing page, README, walkthrough, demo snapshot, and video matches this registry, with no fabricated metrics and no leaked recording identity.
 criticality: CRITICAL
 category: product
-status: UNPROVEN
-proof_standard: `audit_publication.py` pass + cross-artifact consistency check in `JUDGE_WALKTHROUGH.md` + `JUDGE_SIMULATION` pass.
-method: Run publication audit and independent judge cold-read rehearsal.
+status: PROVEN
+proof_standard: `npm run audit` reports zero findings on the tracked tree (stale markers, non-demo emails, local home paths, unusable commands), and the walkthrough's expected output matches the committed run.
+method: `npm run audit` with the recording account name and email supplied as denied literals; cold-read of JUDGE_WALKTHROUGH.md against `demo/report.json`.
 owner: Product Storyteller / Judge
-artifact: TBD
-environment: Local git index + built artifacts
-observed_at: PENDING
-limitations: None.
-judge_location: All public artifacts
-related_rubric: Submission Audit, Craft (25%)
+artifact: audit output on the tracked tree at 2026-11-22T06:55:54Z; `EVIDENCE.md`, `README.md`, `JUDGE_WALKTHROUGH.md`, `demo/`
+environment: Windows 11, git index
+observed_at: 2026-11-22T06:55:54Z
+limitations: The audit is a deterministic scan, not a proof of tone; the manual cold read remains part of the checklist.
+judge_location: all public artifacts
+related_rubric: submission audit, Craft (25%)
 ```
 
-## Evidence artifacts
+## What the two runs recorded
 
-To be populated with exact paths, command outputs, `.evidence` IDs, and timestamps during `TECHNICAL_DERISK` and `PROOF_ENGINE`.
+| Claim | Doc line | First run | After repair |
+| --- | --- | --- | --- |
+| N-01 Sign in | `README.md:22` | PROVEN | PROVEN |
+| N-02 Filter to Paid | `README.md:23` | PROVEN | PROVEN |
+| N-03 Create an invoice | `README.md:24` | PROVEN | PROVEN |
+| N-04 Export CSV | `README.md:25` | `APP_BUG` — `GET /api/export` 500, `invoice.number.padStart is not a function` | PROVEN |
+| N-05 Monthly summary label | `README.md:26` | `DOC_DRIFT` — docs say "Paid this month", Chrome renders "Collected this month" | PROVEN |
 
-## Freshness / invalidation notes
+Policy gates, recomputed by Kane from the sealed packs:
 
-Any code change to `src/`, `examples/northstar-ledger/`, or `proseproof.policy.yaml` invalidates `C-02`..`C-07` until re-executed and re-sealed.
+| Gate | Metric | First run | After repair |
+| --- | --- | --- | --- |
+| `no-failed-tests` | `totals.failed` | `2` → fail | `0` → pass |
+| `all-tests-pass` | `pass_rate` | `0.6` → fail | `1` → pass |
+| `every-test-asserts` | `metrics.tests_without_checks` | `0` → pass | `0` → pass |
+| `review-heals` | `metrics.heal.healed_tests` | `0` → pass | `0` → pass |
+
+The guard self-test in the healed run is a synthetic patch that deletes N-05; it
+is rejected before any agent edit is applied (`CLAIM_REMOVED`,
+`CLAIM_COUNT_DROPPED`). The two real patches retained every claim; the N-05
+rewrite keeps the promise and changes only the label, with a retention score of
+`0.929`.
+
+## Freshness
+
+Any change to `src/`, `examples/northstar-ledger/`, or the compiled policy
+invalidates C-01 through C-07 until the runs are repeated and resealed. The
+committed `demo/` snapshot is a point-in-time artifact, not a live result: its
+run id and timestamp are printed in `demo/README.md` and in the report header.
 
 ## Unresolved critical claims
 
-`C-01`, `C-02`, `C-03`, `C-04`, `C-05`, `C-07`, `C-08` (all planned; none executed yet).
+None. All eight claims are executed and recorded above.
 
 ## Proof Engine verdict
 
-`UNEXECUTED` (at `EVIDENCE_PLAN` phase).
+`PASS` on the committed tree: 5/5 promises proven after repair, Kane policy `PASS`
+with four of four gates passing, a sealed pack that validates at L1 after
+redaction, and 37/37 automated tests green.
