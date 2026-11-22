@@ -1,0 +1,957 @@
+{
+  "id": "20261121-205247-heal",
+  "createdAt": "2026-11-21T19:59:25.951Z",
+  "mode": "heal",
+  "url": "http://localhost:4177",
+  "docs": [
+    "examples/northstar-ledger/README.md"
+  ],
+  "kaneVersion": "0.10.5",
+  "durationMs": 373272,
+  "exitCode": 0,
+  "credits": 59.35,
+  "policy": {
+    "id": "proseproof-truth-gate",
+    "result": "pass",
+    "exitCode": 0,
+    "counts": {
+      "total": 4,
+      "failed": 0,
+      "warned": 0,
+      "errored": 0
+    },
+    "failedGateIds": [],
+    "gates": [
+      {
+        "id": "no-failed-tests",
+        "metric": "totals.failed",
+        "where": null,
+        "op": "equals",
+        "expected": 0,
+        "severity": "blocking",
+        "message": "Every documented promise must pass in a real browser.",
+        "actual": 0,
+        "status": "pass",
+        "trust": "recomputed",
+        "error": null,
+        "stored": null
+      },
+      {
+        "id": "all-tests-pass",
+        "metric": "pass_rate",
+        "where": null,
+        "op": "min",
+        "expected": 1,
+        "severity": "blocking",
+        "message": "A README claim regressed against the running app.",
+        "actual": 1,
+        "status": "pass",
+        "trust": "recomputed",
+        "error": null,
+        "stored": null
+      },
+      {
+        "id": "every-test-asserts",
+        "metric": "metrics.tests_without_checks",
+        "where": null,
+        "op": "equals",
+        "expected": 0,
+        "severity": "blocking",
+        "message": "Every generated test must end in a real browser assertion.",
+        "actual": 0,
+        "status": "pass",
+        "trust": "recomputed",
+        "error": null,
+        "stored": null
+      },
+      {
+        "id": "review-heals",
+        "metric": "metrics.heal.healed_tests",
+        "where": null,
+        "op": "max",
+        "expected": 0,
+        "severity": "warning",
+        "message": "A step needed adaptive healing. Review the selector drift.",
+        "actual": 0,
+        "status": "pass",
+        "trust": "recomputed",
+        "error": null,
+        "stored": null
+      }
+    ],
+    "file": ".testmuai/evidence/d94bad9a-dffb-4e4c-928e-9671d544e6ba.evidence.verdicts/proseproof-truth-gate.verdict.json",
+    "error": null
+  },
+  "evidence": {
+    "id": "d94bad9a-dffb-4e4c-928e-9671d544e6ba",
+    "sealed": true,
+    "packPath": null,
+    "packs": [],
+    "run": {
+      "evidence": "0.1",
+      "run_id": "d94bad9a-dffb-4e4c-928e-9671d544e6ba",
+      "status": "finalized",
+      "title": "proseproof-heal",
+      "started": "2026-11-21T19:53:06.070Z",
+      "merged_from": [
+        "948c3386-d94f-434b-bd41-d24536513094",
+        "28f4062e-6745-47c7-8ed9-8456af28f4e4",
+        "e64bb6c2-3692-417d-9808-3caa0e3fc2b0"
+      ],
+      "metrics_catalog": {
+        "id": "kane-cli",
+        "version": 1,
+        "sha256": "9774e11a8a2240448d765bd4ad8eb1cf6c0444937e72050588b597539c890e77",
+        "source": "bundled"
+      },
+      "environment": {
+        "producer": {
+          "name": "kane-cli",
+          "version": "0.10.5"
+        },
+        "pid": 15336
+      },
+      "ended": "2026-11-21T19:58:49.650Z",
+      "totals": {
+        "tests": 5,
+        "passed": 5,
+        "failed": 0,
+        "broken": 0,
+        "skipped": 0
+      }
+    },
+    "tests": [
+      {
+        "testId": "f7e0fcb2-ad5a-47b5-9f04-356fdea9df07",
+        "claimId": "N-01",
+        "status": "passed",
+        "durationMs": 71300
+      },
+      {
+        "testId": "b2f1a222-7268-48ec-914f-b814597b769e",
+        "claimId": "N-02",
+        "status": "passed",
+        "durationMs": 95500
+      },
+      {
+        "testId": "d9796527-588a-4d41-9609-6d75e6838ebc",
+        "claimId": "N-03",
+        "status": "passed",
+        "durationMs": 63285
+      },
+      {
+        "testId": "6f78f78e-1496-4be8-b67e-e6fc6d713873",
+        "claimId": "N-04",
+        "status": "passed",
+        "durationMs": 172509
+      },
+      {
+        "testId": "4c168ba3-5c6d-450f-af96-002f7c3cf550",
+        "claimId": "N-05",
+        "status": "passed",
+        "durationMs": 194900
+      }
+    ],
+    "redacted": [
+      "evidence/redacted.evidence"
+    ],
+    "validation": {
+      "valid": true,
+      "status": "finalized",
+      "diagnostics": []
+    },
+    "redactions": 149,
+    "redactionTouched": [
+      "tests/n-01-sign-in-e094d6a9/auteur/execution.json",
+      "tests/n-01-sign-in-e094d6a9/result.yaml",
+      "tests/n-01-sign-in-e094d6a9/v16-trajectory/0-run_summary.json",
+      "tests/n-02-use-the-show-filter-and-choose-paid-5e2685c6/auteur/execution.json",
+      "tests/n-02-use-the-show-filter-and-choose-paid-5e2685c6/result.yaml",
+      "tests/n-02-use-the-show-filter-and-choose-paid-5e2685c6/v16-trajectory/0-run_summary.json",
+      "tests/n-02-use-the-show-filter-and-choose-paid-5e2685c6/v16-trajectory/1-run_summary.json",
+      "tests/n-03-click-new-invoice-f9cfa60a/auteur/execution.json",
+      "tests/n-03-click-new-invoice-f9cfa60a/result.yaml",
+      "tests/n-03-click-new-invoice-f9cfa60a/v16-trajectory/0-run_summary.json",
+      "tests/n-03-click-new-invoice-f9cfa60a/v16-trajectory/1-run_summary.json",
+      "tests/n-04-click-export-csv-c89154ed/auteur/execution.json",
+      "tests/n-04-click-export-csv-c89154ed/logs/tui.log",
+      "tests/n-04-click-export-csv-c89154ed/result.yaml",
+      "tests/n-04-click-export-csv-c89154ed/v16-trajectory/0-run_summary.json",
+      "tests/n-04-click-export-csv-c89154ed/v16-trajectory/1-run_summary.json",
+      "tests/n-05-open-invoices-and-read-the-monthly--09186311/auteur/execution.json",
+      "tests/n-05-open-invoices-and-read-the-monthly--09186311/logs/tui.log",
+      "tests/n-05-open-invoices-and-read-the-monthly--09186311/result.yaml",
+      "tests/n-05-open-invoices-and-read-the-monthly--09186311/v16-trajectory/0-run_summary.json",
+      "tests/n-05-open-invoices-and-read-the-monthly--09186311/v16-trajectory/1-run_summary.json"
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "proven": 5,
+    "lied": 0,
+    "drifted": 0,
+    "platform": 0,
+    "unverifiable": 0
+  },
+  "claims": [
+    {
+      "claimId": "N-01",
+      "title": "Sign in",
+      "status": "PROVEN",
+      "classification": "PROVEN",
+      "reason": "Every documented step passed in real Chrome.",
+      "confidence": 1,
+      "promised": "you are on the Invoices dashboard",
+      "observed": null,
+      "evidence": {
+        "screenshot": "shots/N-01.jpg",
+        "network": [],
+        "console": [],
+        "steps": 7,
+        "failedStep": null,
+        "kaneCategory": null,
+        "kaneTitle": null,
+        "kaneOneLiner": null,
+        "kaneRootCause": null,
+        "kaneSuggestion": null,
+        "kaneConfidence": null,
+        "signals": [],
+        "breakdown": []
+      },
+      "screenshot": "N-01.jpg",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 22
+      },
+      "location": "README.md:22",
+      "quote": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.",
+      "text": "Sign in with demo@northstar.dev / demo1234 — you should land on the Invoices dashboard.",
+      "section": "Try it"
+    },
+    {
+      "claimId": "N-02",
+      "title": "Use the Show filter and choose Paid",
+      "status": "PROVEN",
+      "classification": "PROVEN",
+      "reason": "Every documented step passed in real Chrome.",
+      "confidence": 1,
+      "promised": "the table lists only paid invoices",
+      "observed": null,
+      "evidence": {
+        "screenshot": "shots/N-02.jpg",
+        "network": [],
+        "console": [],
+        "steps": 13,
+        "failedStep": null,
+        "kaneCategory": null,
+        "kaneTitle": null,
+        "kaneOneLiner": null,
+        "kaneRootCause": null,
+        "kaneSuggestion": null,
+        "kaneConfidence": null,
+        "signals": [],
+        "breakdown": []
+      },
+      "screenshot": "N-02.jpg",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 23
+      },
+      "location": "README.md:23",
+      "quote": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices.",
+      "text": "Use the Show filter and choose Paid — the table lists only paid invoices.",
+      "section": "Try it"
+    },
+    {
+      "claimId": "N-03",
+      "title": "Click New Invoice",
+      "status": "PROVEN",
+      "classification": "PROVEN",
+      "reason": "Every documented step passed in real Chrome.",
+      "confidence": 1,
+      "promised": "the new invoice appears at the top of the table",
+      "observed": null,
+      "evidence": {
+        "screenshot": "shots/N-03.jpg",
+        "network": [],
+        "console": [],
+        "steps": 19,
+        "failedStep": null,
+        "kaneCategory": null,
+        "kaneTitle": null,
+        "kaneOneLiner": null,
+        "kaneRootCause": null,
+        "kaneSuggestion": null,
+        "kaneConfidence": null,
+        "signals": [],
+        "breakdown": []
+      },
+      "screenshot": "N-03.jpg",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 24
+      },
+      "location": "README.md:24",
+      "quote": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.",
+      "text": "Click New Invoice, enter a customer and amount, then Save invoice — the new invoice appears at the top of the table.",
+      "section": "Try it"
+    },
+    {
+      "claimId": "N-04",
+      "title": "Click Export CSV",
+      "status": "PROVEN",
+      "classification": "PROVEN",
+      "reason": "Every documented step passed in real Chrome.",
+      "confidence": 1,
+      "promised": "the page confirms Exported invoices to invoices.csv",
+      "observed": null,
+      "evidence": {
+        "screenshot": "shots/N-04.jpg",
+        "network": [],
+        "console": [],
+        "steps": 16,
+        "failedStep": null,
+        "kaneCategory": null,
+        "kaneTitle": null,
+        "kaneOneLiner": "exported invoices as a CSV on the dashboard",
+        "kaneRootCause": null,
+        "kaneSuggestion": null,
+        "kaneConfidence": null,
+        "signals": [],
+        "breakdown": []
+      },
+      "screenshot": "N-04.jpg",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 25
+      },
+      "location": "README.md:25",
+      "quote": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.",
+      "text": "Click Export CSV — the page confirms Exported invoices to invoices.csv.",
+      "section": "Try it"
+    },
+    {
+      "claimId": "N-05",
+      "title": "Open Invoices and read the monthly summary",
+      "status": "PROVEN",
+      "classification": "PROVEN",
+      "reason": "Every documented step passed in real Chrome.",
+      "confidence": 1,
+      "promised": "the first card is labelled Collected this month and totals every paid invoice",
+      "observed": null,
+      "evidence": {
+        "screenshot": "shots/N-05.jpg",
+        "network": [],
+        "console": [],
+        "steps": 15,
+        "failedStep": null,
+        "kaneCategory": null,
+        "kaneTitle": null,
+        "kaneOneLiner": "reviewed the monthly invoice summary on the dashboard",
+        "kaneRootCause": null,
+        "kaneSuggestion": null,
+        "kaneConfidence": null,
+        "signals": [],
+        "breakdown": []
+      },
+      "screenshot": "N-05.jpg",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 26
+      },
+      "location": "README.md:26",
+      "quote": "Open **Invoices** and read the monthly summary — the first card is labelled **Collected this month** and totals every paid invoice.",
+      "text": "Open Invoices and read the monthly summary — the first card is labelled Collected this month and totals every paid invoice.",
+      "section": "Try it"
+    }
+  ],
+  "warnings": [],
+  "claimsSource": [
+    {
+      "id": "N-01",
+      "title": "Sign in",
+      "quote": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.",
+      "text": "Sign in with demo@northstar.dev / demo1234 — you should land on the Invoices dashboard.",
+      "action": "Sign in with demo@northstar.dev / demo1234",
+      "expectation": "you are on the Invoices dashboard",
+      "rawAction": "Sign in with `demo@northstar.dev` / `demo1234`",
+      "rawExpectation": "you are on the **Invoices** dashboard",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 22
+      },
+      "location": "README.md:22",
+      "section": "Try it",
+      "hasQuotedLabel": true
+    },
+    {
+      "id": "N-02",
+      "title": "Use the Show filter and choose Paid",
+      "quote": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices.",
+      "text": "Use the Show filter and choose Paid — the table lists only paid invoices.",
+      "action": "Use the Show filter and choose Paid",
+      "expectation": "the table lists only paid invoices",
+      "rawAction": "Use the **Show** filter and choose **Paid**",
+      "rawExpectation": "the table lists only paid invoices",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 23
+      },
+      "location": "README.md:23",
+      "section": "Try it",
+      "hasQuotedLabel": true
+    },
+    {
+      "id": "N-03",
+      "title": "Click New Invoice",
+      "quote": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.",
+      "text": "Click New Invoice, enter a customer and amount, then Save invoice — the new invoice appears at the top of the table.",
+      "action": "Click New Invoice, enter a customer and amount, then Save invoice",
+      "expectation": "the new invoice appears at the top of the table",
+      "rawAction": "Click **New Invoice**, enter a customer and amount, then **Save invoice**",
+      "rawExpectation": "the new invoice appears at the top of the table",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 24
+      },
+      "location": "README.md:24",
+      "section": "Try it",
+      "hasQuotedLabel": true
+    },
+    {
+      "id": "N-04",
+      "title": "Click Export CSV",
+      "quote": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.",
+      "text": "Click Export CSV — the page confirms Exported invoices to invoices.csv.",
+      "action": "Click Export CSV",
+      "expectation": "the page confirms Exported invoices to invoices.csv",
+      "rawAction": "Click **Export CSV**",
+      "rawExpectation": "the page confirms `Exported invoices to invoices.csv`",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 25
+      },
+      "location": "README.md:25",
+      "section": "Try it",
+      "hasQuotedLabel": true
+    },
+    {
+      "id": "N-05",
+      "title": "Open Invoices and read the monthly summary",
+      "quote": "Open **Invoices** and read the monthly summary — the first card is labelled **Collected this month** and totals every paid invoice.",
+      "text": "Open Invoices and read the monthly summary — the first card is labelled Collected this month and totals every paid invoice.",
+      "action": "Open Invoices and read the monthly summary",
+      "expectation": "the first card is labelled Collected this month and totals every paid invoice",
+      "rawAction": "Open **Invoices** and read the monthly summary",
+      "rawExpectation": "the first card is labelled **Collected this month** and totals every paid invoice",
+      "citation": {
+        "file": "README.md",
+        "path": "examples/northstar-ledger/README.md",
+        "line": 26
+      },
+      "location": "README.md:26",
+      "section": "Try it",
+      "hasQuotedLabel": true
+    }
+  ],
+  "setup": {
+    "credentials": {
+      "email": "demo@northstar.dev",
+      "password": "demo1234"
+    },
+    "baseUrl": "http://localhost:4177"
+  },
+  "guard": {
+    "description": "Delete claim N-05 (“Open Invoices and read the monthly summary”) from the docs and call the suite fixed.",
+    "removedClaim": "N-05",
+    "rejected": true,
+    "violations": [
+      {
+        "code": "CLAIM_REMOVED",
+        "claimId": "N-05",
+        "message": "Claim N-05 disappeared from the docs: “Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.”"
+      },
+      {
+        "code": "CLAIM_COUNT_DROPPED",
+        "message": "Docs lost 1 verifiable claim(s). A repair may update wording, not delete promises."
+      }
+    ]
+  },
+  "diff": "diff --git a/examples/northstar-ledger/README.md b/examples/northstar-ledger/README.md\nindex 4d33d08..67cd2c6 100644\n--- a/examples/northstar-ledger/README.md\n+++ b/examples/northstar-ledger/README.md\n@@ -23,7 +23,7 @@ Sign in with `demo@northstar.dev` / `demo1234`, then follow these checks against\n 2. Use the **Show** filter and choose **Paid** — the table lists only paid invoices.\n 3. Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.\n 4. Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.\n-5. Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.\n+5. Open **Invoices** and read the monthly summary — the first card is labelled **Collected this month** and totals every paid invoice.\n \n ## What is in the ledger\n \ndiff --git a/examples/northstar-ledger/server.js b/examples/northstar-ledger/server.js\nindex d5cf2f7..316aca9 100644\n--- a/examples/northstar-ledger/server.js\n+++ b/examples/northstar-ledger/server.js\n@@ -212,7 +212,7 @@ function toCsv(rows) {\n   const header = 'number,customer,amount,status,issued';\n   // Invoice numbers are zero-padded identifiers in the exported ledger.\n   const lines = rows.map((invoice) => [\n-    invoice.number.padStart(6, '0'),\n+    String(invoice.number).padStart(6, '0'),\n     invoice.customer,\n     invoice.amount.toFixed(2),\n     invoice.status,",
+  "before": {
+    "summary": {
+      "total": 5,
+      "proven": 3,
+      "lied": 1,
+      "drifted": 1,
+      "platform": 0,
+      "unverifiable": 0
+    },
+    "policy": {
+      "id": "proseproof-truth-gate",
+      "result": "fail",
+      "exitCode": 1,
+      "counts": {
+        "total": 4,
+        "failed": 2,
+        "warned": 0,
+        "errored": 0
+      },
+      "failedGateIds": [
+        "no-failed-tests",
+        "all-tests-pass"
+      ],
+      "gates": [
+        {
+          "id": "no-failed-tests",
+          "metric": "totals.failed",
+          "where": null,
+          "op": "equals",
+          "expected": 0,
+          "severity": "blocking",
+          "message": "Every documented promise must pass in a real browser.",
+          "actual": 2,
+          "status": "fail",
+          "trust": "recomputed",
+          "error": null,
+          "stored": null
+        },
+        {
+          "id": "all-tests-pass",
+          "metric": "pass_rate",
+          "where": null,
+          "op": "min",
+          "expected": 1,
+          "severity": "blocking",
+          "message": "A README claim regressed against the running app.",
+          "actual": 0.6,
+          "status": "fail",
+          "trust": "recomputed",
+          "error": null,
+          "stored": null
+        },
+        {
+          "id": "every-test-asserts",
+          "metric": "metrics.tests_without_checks",
+          "where": null,
+          "op": "equals",
+          "expected": 0,
+          "severity": "blocking",
+          "message": "Every generated test must end in a real browser assertion.",
+          "actual": 0,
+          "status": "pass",
+          "trust": "recomputed",
+          "error": null,
+          "stored": null
+        },
+        {
+          "id": "review-heals",
+          "metric": "metrics.heal.healed_tests",
+          "where": null,
+          "op": "max",
+          "expected": 0,
+          "severity": "warning",
+          "message": "A step needed adaptive healing. Review the selector drift.",
+          "actual": 0,
+          "status": "pass",
+          "trust": "recomputed",
+          "error": null,
+          "stored": null
+        }
+      ],
+      "file": ".testmuai/evidence/62420469-a313-4c61-8bee-066e831703a8.evidence.verdicts/proseproof-truth-gate.verdict.json",
+      "error": null
+    },
+    "claims": [
+      {
+        "claimId": "N-01",
+        "title": "Sign in",
+        "status": "PROVEN",
+        "classification": "PROVEN",
+        "reason": "Every documented step passed in real Chrome.",
+        "confidence": 1,
+        "promised": "you are on the Invoices dashboard",
+        "observed": null,
+        "evidence": {
+          "screenshot": "shots/before-N-01.jpg",
+          "network": [],
+          "console": [],
+          "steps": 6,
+          "failedStep": null,
+          "kaneCategory": null,
+          "kaneTitle": null,
+          "kaneOneLiner": "signed in and opened the Invoices dashboard on Northstar Ledger",
+          "kaneRootCause": null,
+          "kaneSuggestion": null,
+          "kaneConfidence": null,
+          "signals": [],
+          "breakdown": []
+        },
+        "screenshot": "before-N-01.jpg",
+        "citation": {
+          "file": "README.md",
+          "path": "examples/northstar-ledger/README.md",
+          "line": 22
+        },
+        "location": "README.md:22",
+        "quote": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.",
+        "text": "Sign in with demo@northstar.dev / demo1234 — you should land on the Invoices dashboard.",
+        "section": "Try it"
+      },
+      {
+        "claimId": "N-02",
+        "title": "Use the Show filter and choose Paid",
+        "status": "PROVEN",
+        "classification": "PROVEN",
+        "reason": "Every documented step passed in real Chrome.",
+        "confidence": 1,
+        "promised": "the table lists only paid invoices",
+        "observed": null,
+        "evidence": {
+          "screenshot": "shots/before-N-02.jpg",
+          "network": [],
+          "console": [],
+          "steps": 15,
+          "failedStep": null,
+          "kaneCategory": null,
+          "kaneTitle": null,
+          "kaneOneLiner": "filtered invoices to Paid on the dashboard",
+          "kaneRootCause": null,
+          "kaneSuggestion": null,
+          "kaneConfidence": null,
+          "signals": [],
+          "breakdown": []
+        },
+        "screenshot": "before-N-02.jpg",
+        "citation": {
+          "file": "README.md",
+          "path": "examples/northstar-ledger/README.md",
+          "line": 23
+        },
+        "location": "README.md:23",
+        "quote": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices.",
+        "text": "Use the Show filter and choose Paid — the table lists only paid invoices.",
+        "section": "Try it"
+      },
+      {
+        "claimId": "N-03",
+        "title": "Click New Invoice",
+        "status": "PROVEN",
+        "classification": "PROVEN",
+        "reason": "Every documented step passed in real Chrome.",
+        "confidence": 1,
+        "promised": "the new invoice appears at the top of the table",
+        "observed": null,
+        "evidence": {
+          "screenshot": "shots/before-N-03.jpg",
+          "network": [],
+          "console": [],
+          "steps": 22,
+          "failedStep": null,
+          "kaneCategory": null,
+          "kaneTitle": null,
+          "kaneOneLiner": "created and saved a new invoice on the dashboard",
+          "kaneRootCause": null,
+          "kaneSuggestion": null,
+          "kaneConfidence": null,
+          "signals": [],
+          "breakdown": []
+        },
+        "screenshot": "before-N-03.jpg",
+        "citation": {
+          "file": "README.md",
+          "path": "examples/northstar-ledger/README.md",
+          "line": 24
+        },
+        "location": "README.md:24",
+        "quote": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.",
+        "text": "Click New Invoice, enter a customer and amount, then Save invoice — the new invoice appears at the top of the table.",
+        "section": "Try it"
+      },
+      {
+        "claimId": "N-04",
+        "title": "Click Export CSV",
+        "status": "LIED",
+        "classification": "APP_BUG",
+        "reason": "GET http://localhost:4177/api/export returned 500 during a documented user flow.",
+        "confidence": 0.96,
+        "promised": "the page confirms Exported invoices to invoices.csv",
+        "observed": null,
+        "evidence": {
+          "screenshot": "shots/before-N-04.jpg",
+          "network": [
+            {
+              "status": 500,
+              "method": "GET",
+              "url": "http://localhost:4177/api/export",
+              "mime": "text/html; charset=utf-8"
+            },
+            {
+              "status": 500,
+              "method": "GET",
+              "url": "http://localhost:4177/api/export",
+              "mime": "text/html; charset=utf-8"
+            },
+            {
+              "status": 500,
+              "method": "GET",
+              "url": "http://localhost:4177/api/export",
+              "mime": "text/html; charset=utf-8"
+            }
+          ],
+          "console": [
+            {
+              "level": "error",
+              "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+            },
+            {
+              "level": "error",
+              "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+            },
+            {
+              "level": "error",
+              "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+            }
+          ],
+          "steps": 16,
+          "failedStep": "1-6",
+          "kaneCategory": "application_issue/api_error",
+          "kaneTitle": "CSV export fails with server error for invoice numbers",
+          "kaneOneLiner": "The Export CSV action could not create the file, so the requested confirmation never appeared.",
+          "kaneRootCause": "The export service crashes while formatting an invoice number, returning an error instead of creating the CSV file.",
+          "kaneSuggestion": "Update the export service to handle invoice numbers in their stored format, then retry the export and show the success confirmation only after the CSV is created.",
+          "kaneConfidence": 0.99,
+          "signals": [
+            {
+              "kind": "console_error",
+              "excerpt": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+            },
+            {
+              "kind": "http_error_response",
+              "excerpt": "TypeError: invoice.number.padStart is not a function<br> &nbsp; &nbsp;at file:///C:/Users/USER/O"
+            }
+          ],
+          "breakdown": [],
+          "httpStatus": 500,
+          "httpUrl": "http://localhost:4177/api/export"
+        },
+        "screenshot": "before-N-04.jpg",
+        "citation": {
+          "file": "README.md",
+          "path": "examples/northstar-ledger/README.md",
+          "line": 25
+        },
+        "location": "README.md:25",
+        "quote": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.",
+        "text": "Click Export CSV — the page confirms Exported invoices to invoices.csv.",
+        "section": "Try it"
+      },
+      {
+        "claimId": "N-05",
+        "title": "Open Invoices and read the monthly summary",
+        "status": "DRIFTED",
+        "classification": "DOC_DRIFT",
+        "reason": "Docs promise “the first card is labelled Paid this month and totals every paid invoice”, but Chrome shows “Collected this month”.",
+        "confidence": 0.9,
+        "promised": "the first card is labelled Paid this month and totals every paid invoice",
+        "observed": "Collected this month",
+        "evidence": {
+          "screenshot": "shots/before-N-05.jpg",
+          "network": [],
+          "console": [],
+          "steps": 9,
+          "failedStep": "1-3",
+          "kaneCategory": "application_issue/ui_state_mismatch",
+          "kaneTitle": "Monthly collection card uses the wrong label",
+          "kaneOneLiner": "The first monthly summary card says “Collected this month” instead of the required “Paid this month.”",
+          "kaneRootCause": "The Invoices page shows a different label for the paid-invoice monthly total than the required label. The displayed amount is consistent with all three visible paid rows ($2,400.00 + $3,200.00 + $980.00 = $6,580.00), but the card text is wrong.",
+          "kaneSuggestion": "Update the first Invoices summary card label to “Paid this month,” while retaining its current calculation of paid invoice amounts.",
+          "kaneConfidence": 0.95,
+          "signals": [
+            {
+              "kind": "objective_contradiction",
+              "excerpt": "assert: the first card is labelled \"Paid this month\" and totals every paid invoice"
+            }
+          ],
+          "breakdown": [],
+          "driftScore": 0.125
+        },
+        "screenshot": "before-N-05.jpg",
+        "citation": {
+          "file": "README.md",
+          "path": "examples/northstar-ledger/README.md",
+          "line": 26
+        },
+        "location": "README.md:26",
+        "quote": "Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.",
+        "text": "Open Invoices and read the monthly summary — the first card is labelled Paid this month and totals every paid invoice.",
+        "section": "Try it"
+      }
+    ],
+    "runId": "20261121-204300-check"
+  },
+  "agent": {
+    "provider": "llm",
+    "model": "deepseek-v4.1-flash-1017",
+    "patches": [
+      {
+        "claimId": "N-04",
+        "attempt": 1,
+        "accepted": true,
+        "diagnosis": "The export endpoint returns 500 because toCsv calls padStart on numeric invoice numbers, which are not strings.",
+        "model": "deepseek-v4.1-flash-1017",
+        "edits": [
+          {
+            "file": "examples/northstar-ledger/server.js",
+            "reason": "Convert the stored numeric invoice number to a string before zero-padding so CSV export succeeds and the documented confirmation can appear."
+          }
+        ],
+        "guard": [
+          {
+            "claimId": "N-01",
+            "retained": true,
+            "similarity": 1,
+            "before": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.",
+            "after": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard."
+          },
+          {
+            "claimId": "N-02",
+            "retained": true,
+            "similarity": 1,
+            "before": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices.",
+            "after": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices."
+          },
+          {
+            "claimId": "N-03",
+            "retained": true,
+            "similarity": 1,
+            "before": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.",
+            "after": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table."
+          },
+          {
+            "claimId": "N-04",
+            "retained": true,
+            "similarity": 1,
+            "before": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.",
+            "after": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`."
+          },
+          {
+            "claimId": "N-05",
+            "retained": true,
+            "similarity": 1,
+            "before": "Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.",
+            "after": "Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice."
+          }
+        ]
+      },
+      {
+        "claimId": "N-05",
+        "attempt": 1,
+        "accepted": true,
+        "diagnosis": "The Invoices page correctly totals paid invoices but labels the first summary card “Collected this month,” so the README should match the shipped UI wording.",
+        "model": "deepseek-v4.1-flash-1017",
+        "edits": [
+          {
+            "file": "examples/northstar-ledger/README.md",
+            "reason": "Align the documented card label with the actual UI while preserving the promise that the card totals every paid invoice."
+          }
+        ],
+        "guard": [
+          {
+            "claimId": "N-01",
+            "retained": true,
+            "similarity": 1,
+            "before": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard.",
+            "after": "Sign in with `demo@northstar.dev` / `demo1234` — you should land on the **Invoices** dashboard."
+          },
+          {
+            "claimId": "N-02",
+            "retained": true,
+            "similarity": 1,
+            "before": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices.",
+            "after": "Use the **Show** filter and choose **Paid** — the table lists only paid invoices."
+          },
+          {
+            "claimId": "N-03",
+            "retained": true,
+            "similarity": 1,
+            "before": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.",
+            "after": "Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table."
+          },
+          {
+            "claimId": "N-04",
+            "retained": true,
+            "similarity": 1,
+            "before": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.",
+            "after": "Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`."
+          },
+          {
+            "claimId": "N-05",
+            "retained": true,
+            "similarity": 0.929,
+            "before": "Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.",
+            "after": "Open **Invoices** and read the monthly summary — the first card is labelled **Collected this month** and totals every paid invoice."
+          }
+        ]
+      }
+    ]
+  },
+  "heal": {
+    "healed": true,
+    "steps": [
+      {
+        "state": "fail",
+        "title": "Kane runs the README in Chrome",
+        "detail": "3/5 promises proven · 1 app bug(s) · 1 doc drift(s) · policy FAIL"
+      },
+      {
+        "state": "done",
+        "title": "ProseProof triages the failure",
+        "detail": "N-04: APP_BUG — GET http://localhost:4177/api/export returned 500 during a documented user flow. N-05: DOC_DRIFT — Docs promise “the first card is labelled Paid this month and totals every paid invoice”, but Chrome shows “Collected this month”."
+      },
+      {
+        "state": "done",
+        "title": "Anti-cheat guard self-test",
+        "detail": "A patch that deleted claim N-05 was rejected before any repair was accepted.",
+        "code": "CLAIM_REMOVED: Claim N-05 disappeared from the docs: “Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.”\nCLAIM_COUNT_DROPPED: Docs lost 1 verifiable claim(s). A repair may update wording, not delete promises."
+      },
+      {
+        "state": "done",
+        "title": "Agent repairs the real cause",
+        "detail": "N-04: The export endpoint returns 500 because toCsv calls padStart on numeric invoice numbers, which are not strings. (1 edit) · N-05: The Invoices page correctly totals paid invoices but labels the first summary card “Collected this month,” so the README should match the shipped UI wording. (1 edit)"
+      },
+      {
+        "state": "done",
+        "title": "Kane re-checks the truth",
+        "detail": "5/5 promises proven · policy PASS"
+      }
+    ],
+    "guard": {
+      "description": "Delete claim N-05 (“Open Invoices and read the monthly summary”) from the docs and call the suite fixed.",
+      "removedClaim": "N-05",
+      "rejected": true,
+      "violations": [
+        {
+          "code": "CLAIM_REMOVED",
+          "claimId": "N-05",
+          "message": "Claim N-05 disappeared from the docs: “Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.”"
+        },
+        {
+          "code": "CLAIM_COUNT_DROPPED",
+          "message": "Docs lost 1 verifiable claim(s). A repair may update wording, not delete promises."
+        }
+      ]
+    }
+  },
+  "publishedAt": "2026-11-22T06:51:05.382Z",
+  "publishedFrom": "20261121-205247-heal"
+}

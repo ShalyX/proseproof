@@ -27,6 +27,37 @@ function copyTree(from, to) {
   return count;
 }
 
+// A published snapshot must not carry the machine it was recorded on: absolute
+// paths under the project become repo-relative, and screenshots point at the
+// copies written below.
+function sanitizeReport(source) {
+  const rootPosix = root.replace(/\\/g, '/');
+  const walk = (value) => {
+    if (typeof value === 'string') {
+      const posix = value.replace(/\\/g, '/');
+      return posix.startsWith(rootPosix) ? posix.slice(rootPosix.length + 1) : value;
+    }
+    if (Array.isArray(value)) return value.map(walk);
+    if (value && typeof value === 'object') {
+      const out = {};
+      for (const [key, inner] of Object.entries(value)) out[key] = walk(inner);
+      return out;
+    }
+    return value;
+  };
+
+  const clean = walk(source);
+  for (const claim of clean.claims || []) {
+    const name = claim.screenshot || (claim.evidence?.screenshot && path.basename(claim.evidence.screenshot));
+    if (name && claim.evidence) claim.evidence.screenshot = `shots/${name}`;
+  }
+  for (const claim of clean.before?.claims || []) {
+    const name = claim.screenshot || (claim.evidence?.screenshot && path.basename(claim.evidence.screenshot));
+    if (name && claim.evidence) claim.evidence.screenshot = `shots/${name}`;
+  }
+  return clean;
+}
+
 if (!fs.existsSync(latestPath)) {
   console.error('No run found. Run `node bin/proseproof.js check ...` first.');
   process.exit(1);
@@ -71,7 +102,7 @@ report.evidence = {
 report.publishedAt = new Date().toISOString();
 report.publishedFrom = report.id;
 
-fs.writeFileSync(path.join(demoDir, 'report.json'), JSON.stringify(report, null, 2) + '\n', 'utf8');
+fs.writeFileSync(path.join(demoDir, 'report.json'), JSON.stringify(sanitizeReport(report), null, 2) + '\n', 'utf8');
 
 // A zero-install copy of the console: open demo/index.html straight from disk.
 fs.writeFileSync(path.join(demoDir, 'index.html'), renderReport(report), 'utf8');

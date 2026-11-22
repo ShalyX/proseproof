@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proven · ProseProof Truth Report</title>
+<style>
+:root{
+  --paper:#FAF8F4; --card:#FFFFFF; --ink:#141619; --muted:#5B606B; --faint:#8A8F98;
+  --line:#E4E0D8; --line-strong:#CFC9BD;
+  --cobalt:#1D4ED8; --cobalt-soft:#EEF2FF;
+  --emerald:#0F766E; --emerald-soft:#E9F5F1;
+  --crimson:#BE123C; --crimson-soft:#FBEFF1;
+  --amber:#B45309; --amber-soft:#FBF2E4;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:"Inter","Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Code",Consolas,"SF Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(rgba(20,22,25,.028) .6px, transparent .6px);background-size:22px 22px;}
+a{color:inherit;text-decoration:none}
+code,pre{font-family:var(--mono);font-size:.86em}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:28px;padding:16px 40px;background:rgba(250,248,244,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:inline-flex;align-items:center;gap:9px;font-weight:650;letter-spacing:-.02em;font-size:17px}
+.brand svg{width:26px;height:26px;color:var(--cobalt)}
+.brand.small{font-size:15px}
+.topbar nav{display:flex;gap:22px;margin-left:auto;font-size:13.5px;color:var(--muted)}
+.topbar nav a:hover{color:var(--ink)}
+.kane-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border:1px solid var(--line-strong);border-radius:999px;font-size:12px;color:var(--muted);background:var(--card)}
+.kane-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald)}
+main{max-width:1120px;margin:0 auto;padding:0 40px}
+.hero{display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:end;padding:76px 0 60px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 22px}
+.eyebrow span{margin:0 8px;color:var(--line-strong)}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(44px,6vw,74px);line-height:1.02;letter-spacing:-.035em;margin:0 0 26px}
+h1 em{font-style:italic;color:var(--cobalt)}
+.lede{font-size:18px;line-height:1.62;color:var(--muted);max-width:56ch;margin:0 0 36px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:34px;margin:0}
+.hero-meta div{display:flex;flex-direction:column;gap:3px}
+.hero-meta dt{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.hero-meta dd{margin:0;font-size:13.5px}
+.hero-meta .sep{margin:0 6px;color:var(--line-strong)}
+.verdict-card{border:1px solid var(--ink);background:var(--card);padding:26px 26px 22px;position:relative}
+.verdict-card::before{content:"";position:absolute;inset:5px;border:1px solid var(--line);pointer-events:none}
+.verdict-card.is-fail{border-color:var(--crimson)}
+.verdict-card.is-pass{border-color:var(--emerald)}
+.v-label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 14px}
+.v-word{font-family:var(--serif);font-size:58px;line-height:1;margin:0;letter-spacing:-.02em}
+.is-fail .v-word{color:var(--crimson)}.is-pass .v-word{color:var(--emerald)}
+.v-policy{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin:8px 0 22px}
+.tally{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;border-top:1px solid var(--line);padding-top:18px}
+.tally div{display:flex;flex-direction:column}
+.tally .n{font-family:var(--serif);font-size:26px;line-height:1}
+.tally .t{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:5px}
+.red{color:var(--crimson)}.amber{color:var(--amber)}.muted{color:var(--muted)}
+.v-note{font-size:12.5px;color:var(--muted);margin:20px 0 0;border-top:1px solid var(--line);padding-top:14px}
+.section{padding:64px 0;border-bottom:1px solid var(--line)}
+.section-head{display:grid;grid-template-columns:44px 1fr;gap:0 18px;margin-bottom:34px}
+.section-head .num{font-family:var(--mono);font-size:12px;color:var(--faint);padding-top:9px}
+.section-head h2{font-family:var(--serif);font-weight:400;font-size:38px;letter-spacing:-.02em;margin:0 0 6px}
+.section-head p{grid-column:2;margin:0;color:var(--muted);max-width:68ch;font-size:14.5px}
+.sheet-head{display:grid;grid-template-columns:86px 1fr 250px;gap:18px;padding:0 18px 10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--line-strong)}
+.claim{border-bottom:1px solid var(--line);background:transparent}
+.claim[open]{background:var(--card);border:1px solid var(--line);border-bottom:1px solid var(--line);margin:10px 0}
+.claim summary{display:grid;grid-template-columns:86px 1fr 250px;gap:18px;align-items:center;padding:18px;cursor:pointer;list-style:none}
+.claim summary::-webkit-details-marker{display:none}
+.claim:hover summary{background:rgba(255,255,255,.62)}
+.claim-index{font-family:var(--mono);font-size:12px;color:var(--faint)}
+.claim-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+.claim-meta{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.cite{font-size:10.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:3px}
+.claim-title{font-weight:600;font-size:16.5px;letter-spacing:-.01em}
+.claim-quote{color:var(--muted);font-size:13.5px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fixed{color:var(--faint);font-size:12px;margin-left:2px}
+mark{background:linear-gradient(transparent 52%, #F6E3A8 52%);color:inherit;padding:0 1px}
+.pill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:3px 7px;border:1px solid;border-radius:2px;white-space:nowrap}
+.pill.is-proven{color:var(--emerald);border-color:#BFDCD4;background:var(--emerald-soft)}
+.pill.is-bug{color:var(--crimson);border-color:#EEC4CD;background:var(--crimson-soft)}
+.pill.is-drift{color:var(--amber);border-color:#EBD3AC;background:var(--amber-soft)}
+.pill.is-unknown{color:var(--muted);border-color:var(--line-strong);background:var(--paper)}
+.claim-thumb{justify-self:end}
+.shot{display:block;width:250px;height:146px;object-fit:cover;object-position:top;border:1px solid var(--line-strong);background:#fff;filter:saturate(.92)}
+.shot-empty{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--faint)}
+.claim-detail{padding:6px 24px 28px 104px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px}
+.detail-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:20px 0 8px}
+.claim-detail blockquote{margin:0;padding:0 0 0 16px;border-left:2px solid var(--line-strong);font-family:var(--serif);font-size:19px;line-height:1.45}
+.verdict-line{font-size:14px;color:var(--muted);margin:0}
+.observed{font-family:var(--mono);font-size:13px;color:var(--crimson);margin:0}
+.evidence-list{margin:0;display:flex;flex-direction:column;gap:8px}
+.evidence-list div{display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:13px}
+.evidence-list dt{color:var(--faint);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}
+.evidence-list dd{margin:0;word-break:break-word;overflow-wrap:anywhere}
+.log{margin:0;padding-left:16px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.log li{margin-bottom:4px;word-break:break-all}
+.code-red{color:var(--crimson)}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.timeline li{display:grid;grid-template-columns:26px 1fr;gap:16px;padding:0 0 26px;position:relative}
+.timeline li::before{content:"";position:absolute;left:6px;top:16px;bottom:0;width:1px;background:var(--line-strong)}
+.timeline li:last-child::before{display:none}
+.tl-dot{width:13px;height:13px;margin-top:3px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);position:relative;z-index:1}
+.tl-done .tl-dot{background:var(--emerald);border-color:var(--emerald)}
+.tl-fail .tl-dot{background:var(--crimson);border-color:var(--crimson)}
+.tl-title{margin:0;font-weight:600;font-size:15px}
+.tl-detail{margin:3px 0 0;color:var(--muted);font-size:13.5px}
+.tl-code{margin:10px 0 0;padding:10px 12px;background:var(--ink);color:#EDEBE6;font-size:11.5px;overflow:auto;border-radius:2px}
+.guard-card{margin-top:8px;border:1px solid var(--line-strong);padding:18px 20px;background:var(--card)}
+.guard-card.is-proven{border-left:3px solid var(--emerald)}
+.guard-card.is-bug{border-left:3px solid var(--crimson)}
+.diff{margin:0;padding:20px 22px;background:var(--ink);color:#DCD9D2;font-size:12px;line-height:1.7;overflow:auto;max-height:520px;border-radius:2px}
+.diff .add{color:#8EE0C0;display:block}
+.diff .del{color:#F2A2B4;display:block}
+.diff .hunk{color:#9DB7FF;display:block}
+.diff span:not(.add):not(.del):not(.hunk){display:block}
+.evidence-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:26px}
+.evidence-grid > *{min-width:0}
+.evidence-card{border:1px solid var(--line-strong);background:var(--card);padding:22px 24px}
+.gates{width:100%;border-collapse:collapse;font-size:12.5px}
+.gates th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:0 8px 8px 0;border-bottom:1px solid var(--line)}
+.gates td{padding:9px 8px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.gates code{font-size:11px}
+.cmd{margin:0;padding:12px 14px;background:var(--paper);border:1px solid var(--line);font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+footer{display:flex;align-items:center;gap:20px;padding:34px 0 60px;font-size:12.5px;color:var(--muted)}
+footer .brand{margin-right:6px;color:var(--ink)}
+footer p{margin:0}
+footer .muted{margin-left:auto;color:var(--faint);font-family:var(--mono);font-size:10.5px}
+@media (max-width:900px){
+  main{padding:0 20px}.topbar{padding:14px 20px;gap:14px}.topbar nav{display:none}
+  .hero{grid-template-columns:1fr;gap:30px;padding:44px 0 40px}
+  .detail-grid{grid-template-columns:1fr;gap:10px}
+  .claim-detail{padding:6px 18px 24px}
+  .sheet-head{display:none}
+  .claim summary{grid-template-columns:1fr;gap:10px}
+  .claim-index{display:none}.claim-thumb{justify-self:start}
+  .shot{width:100%;height:auto;max-height:220px}
+  .evidence-grid{grid-template-columns:1fr}
+  .gates{display:block;overflow-x:auto}
+  .hero-meta dd,.v-policy{overflow-wrap:anywhere}
+  body{overflow-x:hidden}
+  footer{flex-wrap:wrap}.footer .muted{margin-left:0}
+  .section-head{grid-template-columns:1fr}.section-head .num{display:none}.section-head p{grid-column:1}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 6.5h13.5M4 14h9M4 21.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m16.5 19.5 3.2 3.2 6-7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    ProseProof
+  </a>
+  <nav><a href="#sheet">Claims</a><a href="#loop">Loop</a><a href="#evidence">Evidence</a></nav>
+  <span class="kane-chip"><span class="dot"></span>Kane CLI 0.10.5</span>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-main">
+    <p class="eyebrow">Truth report <span>·</span> 21 Nov 2026 <span>·</span> real Chrome</p>
+    <h1>Docs shouldn’t lie.<br><em>Now they don’t.</em></h1>
+    <p class="lede">First run: 3 of 5 promises survived and ProseProof caught 1 app bug and 1 drift. After the repair, all 5 pass in real Chrome.</p>
+    <dl class="hero-meta">
+      <div><dt>Target</dt><dd>http://localhost:4177</dd></div>
+      <div><dt>Docs</dt><dd><code>examples/northstar-ledger/README.md</code></dd></div>
+      <div><dt>Runtime</dt><dd>6m 13s <span class="sep">·</span> 59.35 credits</dd></div>
+    </dl>
+  </div>
+  <aside class="verdict-card is-pass">
+    <p class="v-label">Kane policy verdict</p>
+    <p class="v-word">PASS</p>
+    <p class="v-policy">proseproof-truth-gate</p>
+    <div class="tally">
+      <div><span class="n">5</span><span class="t">proven</span></div>
+      <div><span class="n red">0</span><span class="t">app bugs</span></div>
+      <div><span class="n amber">0</span><span class="t">drift</span></div>
+      <div><span class="n muted">0</span><span class="t">unjudged</span></div>
+    </div>
+    <p class="v-note">First run: 3 proven · 1 app bug · 1 drift. After the repair: 5/5 proven.</p>
+  </aside>
+</section>
+
+<section class="section" id="sheet">
+  <div class="section-head"><span class="num">01</span><h2>The redline sheet</h2><p>Each numbered promise is lifted from the docs with a line citation, then checked in Chrome. Open a row for the evidence.</p></div>
+  <div class="sheet-head"><span>Claim</span><span>Promise &amp; verdict</span><span>Chrome</span></div>
+  <div class="claims">
+    <details class="claim is-proven">
+  <summary>
+    <span class="claim-index">N-01</span>
+    <span class="claim-main">
+      <span class="claim-meta">
+        <code class="cite">README.md:22</code>
+        <span class="pill is-proven">PROVEN</span>
+        
+      </span>
+      <span class="claim-title">Sign in</span>
+      <span class="claim-quote">Sign in with <mark>demo@northstar.dev</mark> / <mark>demo1234</mark> — you should land on the <mark>Invoices</mark> dashboard.</span>
+    </span>
+    <span class="claim-thumb"><img class="shot" src="shots/N-01.jpg" alt="Real Chrome screenshot for N-01" loading="lazy"></span>
+  </summary>
+  <div class="claim-detail">
+    <div class="detail-grid">
+      <div>
+        <p class="detail-label">What the docs promised</p>
+        <blockquote>Sign in with <mark>demo@northstar.dev</mark> / <mark>demo1234</mark> — you should land on the <mark>Invoices</mark> dashboard.</blockquote>
+        <p class="detail-label">Verdict</p>
+        <p class="verdict-line"><span class="pill is-proven">PROVEN</span> Every documented step passed in real Chrome.</p>
+        
+        
+      </div>
+      <div>
+        <p class="detail-label">Kane CLI evidence</p>
+        <dl class="evidence-list">
+          <div><dt>Classification</dt><dd>PROVEN</dd></div>
+          
+          <div><dt>Steps executed</dt><dd>7</dd></div>
+          <div><dt>Confidence</dt><dd>100%</dd></div>
+        </dl>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</details>
+<details class="claim is-proven">
+  <summary>
+    <span class="claim-index">N-02</span>
+    <span class="claim-main">
+      <span class="claim-meta">
+        <code class="cite">README.md:23</code>
+        <span class="pill is-proven">PROVEN</span>
+        
+      </span>
+      <span class="claim-title">Use the Show filter and choose Paid</span>
+      <span class="claim-quote">Use the <mark>Show</mark> filter and choose <mark>Paid</mark> — the table lists only paid invoices.</span>
+    </span>
+    <span class="claim-thumb"><img class="shot" src="shots/N-02.jpg" alt="Real Chrome screenshot for N-02" loading="lazy"></span>
+  </summary>
+  <div class="claim-detail">
+    <div class="detail-grid">
+      <div>
+        <p class="detail-label">What the docs promised</p>
+        <blockquote>Use the <mark>Show</mark> filter and choose <mark>Paid</mark> — the table lists only paid invoices.</blockquote>
+        <p class="detail-label">Verdict</p>
+        <p class="verdict-line"><span class="pill is-proven">PROVEN</span> Every documented step passed in real Chrome.</p>
+        
+        
+      </div>
+      <div>
+        <p class="detail-label">Kane CLI evidence</p>
+        <dl class="evidence-list">
+          <div><dt>Classification</dt><dd>PROVEN</dd></div>
+          
+          <div><dt>Steps executed</dt><dd>13</dd></div>
+          <div><dt>Confidence</dt><dd>100%</dd></div>
+        </dl>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</details>
+<details class="claim is-proven">
+  <summary>
+    <span class="claim-index">N-03</span>
+    <span class="claim-main">
+      <span class="claim-meta">
+        <code class="cite">README.md:24</code>
+        <span class="pill is-proven">PROVEN</span>
+        
+      </span>
+      <span class="claim-title">Click New Invoice</span>
+      <span class="claim-quote">Click <mark>New Invoice</mark>, enter a customer and amount, then <mark>Save invoice</mark> — the new invoice appears at the top of the table.</span>
+    </span>
+    <span class="claim-thumb"><img class="shot" src="shots/N-03.jpg" alt="Real Chrome screenshot for N-03" loading="lazy"></span>
+  </summary>
+  <div class="claim-detail">
+    <div class="detail-grid">
+      <div>
+        <p class="detail-label">What the docs promised</p>
+        <blockquote>Click <mark>New Invoice</mark>, enter a customer and amount, then <mark>Save invoice</mark> — the new invoice appears at the top of the table.</blockquote>
+        <p class="detail-label">Verdict</p>
+        <p class="verdict-line"><span class="pill is-proven">PROVEN</span> Every documented step passed in real Chrome.</p>
+        
+        
+      </div>
+      <div>
+        <p class="detail-label">Kane CLI evidence</p>
+        <dl class="evidence-list">
+          <div><dt>Classification</dt><dd>PROVEN</dd></div>
+          
+          <div><dt>Steps executed</dt><dd>19</dd></div>
+          <div><dt>Confidence</dt><dd>100%</dd></div>
+        </dl>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</details>
+<details class="claim is-bug">
+  <summary>
+    <span class="claim-index">N-04</span>
+    <span class="claim-main">
+      <span class="claim-meta">
+        <code class="cite">README.md:25</code>
+        <span class="pill is-bug">APP BUG</span>
+        <span class="fixed">→</span><span class="pill is-proven">PROVEN</span>
+      </span>
+      <span class="claim-title">Click Export CSV</span>
+      <span class="claim-quote">Click <mark>Export CSV</mark> — the page confirms <mark>Exported invoices to invoices.csv</mark>.</span>
+    </span>
+    <span class="claim-thumb"><img class="shot" src="shots/before-N-04.jpg" alt="Real Chrome screenshot for N-04" loading="lazy"></span>
+  </summary>
+  <div class="claim-detail">
+    <div class="detail-grid">
+      <div>
+        <p class="detail-label">What the docs promised</p>
+        <blockquote>Click <mark>Export CSV</mark> — the page confirms <mark>Exported invoices to invoices.csv</mark>.</blockquote>
+        <p class="detail-label">First run</p>
+        <p class="verdict-line"><span class="pill is-bug">APP BUG</span> GET http://localhost:4177/api/export returned 500 during a documented user flow.</p>
+        
+        <p class="detail-label">After the repair</p><p class="verdict-line"><span class="pill is-proven">PROVEN</span> Every documented step passed in real Chrome.</p>
+      </div>
+      <div>
+        <p class="detail-label">Kane CLI evidence</p>
+        <dl class="evidence-list">
+          <div><dt>Classification</dt><dd>application_issue/api_error</dd></div>
+          <div><dt>Network</dt><dd><code>500</code> http://localhost:4177/api/export</dd></div>
+          <div><dt>Steps executed</dt><dd>16</dd></div>
+          <div><dt>Confidence</dt><dd>96%</dd></div>
+        </dl>
+        <p class="detail-label">Failing requests</p><ul class="log"><li><span class="code-red">500</span> GET http://localhost:4177/api/export</li><li><span class="code-red">500</span> GET http://localhost:4177/api/export</li><li><span class="code-red">500</span> GET http://localhost:4177/api/export</li></ul>
+        <p class="detail-label">Console</p><ul class="log"><li>Failed to load resource: the server responded with a status of 500 (Internal Server Error)</li><li>Failed to load resource: the server responded with a status of 500 (Internal Server Error)</li><li>Failed to load resource: the server responded with a status of 500 (Internal Server Error)</li></ul>
+        <p class="detail-label">Kane suggested repair</p><p class="muted">Update the export service to handle invoice numbers in their stored format, then retry the export and show the success confirmation only after the CSV is created.</p>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="claim is-drift">
+  <summary>
+    <span class="claim-index">N-05</span>
+    <span class="claim-main">
+      <span class="claim-meta">
+        <code class="cite">README.md:26</code>
+        <span class="pill is-drift">DOC DRIFT</span>
+        <span class="fixed">→</span><span class="pill is-proven">PROVEN</span>
+      </span>
+      <span class="claim-title">Open Invoices and read the monthly summary</span>
+      <span class="claim-quote">Open <mark>Invoices</mark> and read the monthly summary — the first card is labelled <mark>Collected this month</mark> and totals every paid invoice.</span>
+    </span>
+    <span class="claim-thumb"><img class="shot" src="shots/before-N-05.jpg" alt="Real Chrome screenshot for N-05" loading="lazy"></span>
+  </summary>
+  <div class="claim-detail">
+    <div class="detail-grid">
+      <div>
+        <p class="detail-label">What the docs promised</p>
+        <blockquote>Open <mark>Invoices</mark> and read the monthly summary — the first card is labelled <mark>Collected this month</mark> and totals every paid invoice.</blockquote>
+        <p class="detail-label">First run</p>
+        <p class="verdict-line"><span class="pill is-drift">DOC DRIFT</span> Docs promise “the first card is labelled Paid this month and totals every paid invoice”, but Chrome shows “Collected this month”.</p>
+        <p class="detail-label">Observed in Chrome</p><p class="observed">“Collected this month”</p>
+        <p class="detail-label">After the repair</p><p class="verdict-line"><span class="pill is-proven">PROVEN</span> Every documented step passed in real Chrome.</p>
+      </div>
+      <div>
+        <p class="detail-label">Kane CLI evidence</p>
+        <dl class="evidence-list">
+          <div><dt>Classification</dt><dd>application_issue/ui_state_mismatch</dd></div>
+          
+          <div><dt>Steps executed</dt><dd>9</dd></div>
+          <div><dt>Confidence</dt><dd>90%</dd></div>
+        </dl>
+        
+        
+        <p class="detail-label">Kane suggested repair</p><p class="muted">Update the first Invoices summary card label to “Paid this month,” while retaining its current calculation of paid invoice amounts.</p>
+      </div>
+    </div>
+  </div>
+</details>
+  </div>
+</section>
+
+<section class="section" id="loop">
+  <div class="section-head"><span class="num">02</span><h2>The closed loop</h2><p>Kane’s failure evidence drove a real agent patch, then Kane re-checked the truth.</p></div>
+  <ol class="timeline">
+    <li class="tl-fail">
+      <span class="tl-dot"></span>
+      <div>
+        <p class="tl-title">Kane runs the README in Chrome</p>
+        <p class="tl-detail">3/5 promises proven · 1 app bug(s) · 1 doc drift(s) · policy FAIL</p>
+        
+      </div>
+    </li><li class="tl-done">
+      <span class="tl-dot"></span>
+      <div>
+        <p class="tl-title">ProseProof triages the failure</p>
+        <p class="tl-detail">N-04: APP_BUG — GET http://localhost:4177/api/export returned 500 during a documented user flow. N-05: DOC_DRIFT — Docs promise “the first card is labelled Paid this month and totals every paid invoice”, but Chrome shows “Collected this month”.</p>
+        
+      </div>
+    </li><li class="tl-done">
+      <span class="tl-dot"></span>
+      <div>
+        <p class="tl-title">Anti-cheat guard self-test</p>
+        <p class="tl-detail">A patch that deleted claim N-05 was rejected before any repair was accepted.</p>
+        <pre class="tl-code">CLAIM_REMOVED: Claim N-05 disappeared from the docs: “Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.”
+CLAIM_COUNT_DROPPED: Docs lost 1 verifiable claim(s). A repair may update wording, not delete promises.</pre>
+      </div>
+    </li><li class="tl-done">
+      <span class="tl-dot"></span>
+      <div>
+        <p class="tl-title">Agent repairs the real cause</p>
+        <p class="tl-detail">N-04: The export endpoint returns 500 because toCsv calls padStart on numeric invoice numbers, which are not strings. (1 edit) · N-05: The Invoices page correctly totals paid invoices but labels the first summary card “Collected this month,” so the README should match the shipped UI wording. (1 edit)</p>
+        
+      </div>
+    </li><li class="tl-done">
+      <span class="tl-dot"></span>
+      <div>
+        <p class="tl-title">Kane re-checks the truth</p>
+        <p class="tl-detail">5/5 promises proven · policy PASS</p>
+        
+      </div>
+    </li>
+  </ol>
+  <div class="guard-card is-proven">
+    <p class="detail-label">Anti-cheat guard self-test</p>
+    <p><strong>Rejected</strong> Delete claim N-05 (“Open Invoices and read the monthly summary”) from the docs and call the suite fixed.</p>
+    <p class="muted"><code>CLAIM_REMOVED</code> Claim N-05 disappeared from the docs: “Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.”</p><p class="muted"><code>CLAIM_COUNT_DROPPED</code> Docs lost 1 verifiable claim(s). A repair may update wording, not delete promises.</p>
+  </div>
+</section>
+<section class="section" id="diff">
+  <div class="section-head"><span class="num">03</span><h2>The repair</h2><p>Exact diff the agent applied after the guard confirmed every promise survived.</p></div>
+  <pre class="diff"><span class="">diff --git a/examples/northstar-ledger/README.md b/examples/northstar-ledger/README.md</span>
+<span class="">index 4d33d08..67cd2c6 100644</span>
+<span class="">--- a/examples/northstar-ledger/README.md</span>
+<span class="">+++ b/examples/northstar-ledger/README.md</span>
+<span class="hunk">@@ -23,7 +23,7 @@ Sign in with `demo@northstar.dev` / `demo1234`, then follow these checks against</span>
+<span class=""> 2. Use the **Show** filter and choose **Paid** — the table lists only paid invoices.</span>
+<span class=""> 3. Click **New Invoice**, enter a customer and amount, then **Save invoice** — the new invoice appears at the top of the table.</span>
+<span class=""> 4. Click **Export CSV** — the page confirms `Exported invoices to invoices.csv`.</span>
+<span class="del">-5. Open **Invoices** and read the monthly summary — the first card is labelled **Paid this month** and totals every paid invoice.</span>
+<span class="add">+5. Open **Invoices** and read the monthly summary — the first card is labelled **Collected this month** and totals every paid invoice.</span>
+<span class=""> </span>
+<span class=""> ## What is in the ledger</span>
+<span class=""> </span>
+<span class="">diff --git a/examples/northstar-ledger/server.js b/examples/northstar-ledger/server.js</span>
+<span class="">index d5cf2f7..316aca9 100644</span>
+<span class="">--- a/examples/northstar-ledger/server.js</span>
+<span class="">+++ b/examples/northstar-ledger/server.js</span>
+<span class="hunk">@@ -212,7 +212,7 @@ function toCsv(rows) {</span>
+<span class="">   const header = &#39;number,customer,amount,status,issued&#39;;</span>
+<span class="">   // Invoice numbers are zero-padded identifiers in the exported ledger.</span>
+<span class="">   const lines = rows.map((invoice) =&gt; [</span>
+<span class="del">-    invoice.number.padStart(6, &#39;0&#39;),</span>
+<span class="add">+    String(invoice.number).padStart(6, &#39;0&#39;),</span>
+<span class="">     invoice.customer,</span>
+<span class="">     invoice.amount.toFixed(2),</span>
+<span class="">     invoice.status,</span></pre>
+</section>
+
+<section class="section" id="evidence">
+  <div class="section-head"><span class="num">04</span><h2>Sealed evidence</h2><p>Kane CLI writes a tamper-evident <code>.evidence</code> pack for every run. ProseProof judges the pack with a CEL-style policy and keeps the proof inspectable.</p></div>
+  <div class="evidence-grid">
+    <div class="evidence-card">
+      <p class="detail-label">Policy gates</p>
+      <table class="gates"><thead><tr><th>Gate</th><th>Metric</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead><tbody>
+  <tr>
+    <td><code>no-failed-tests</code></td>
+    <td>totals.failed</td>
+    <td>equals 0</td>
+    <td>0</td>
+    <td><span class="pill is-proven">pass</span></td>
+  </tr><tr>
+    <td><code>all-tests-pass</code></td>
+    <td>pass_rate</td>
+    <td>min 1</td>
+    <td>1</td>
+    <td><span class="pill is-proven">pass</span></td>
+  </tr><tr>
+    <td><code>every-test-asserts</code></td>
+    <td>metrics.tests_without_checks</td>
+    <td>equals 0</td>
+    <td>0</td>
+    <td><span class="pill is-proven">pass</span></td>
+  </tr><tr>
+    <td><code>review-heals</code></td>
+    <td>metrics.heal.healed_tests</td>
+    <td>max 0</td>
+    <td>0</td>
+    <td><span class="pill is-proven">pass</span></td>
+  </tr>
+  </tbody></table>
+    </div>
+    <div class="evidence-card">
+      <p class="detail-label">Pack</p>
+      <dl class="evidence-list">
+        <div><dt>Evidence ID</dt><dd><code>d94bad9a-dffb-4e4c-928e-9671d544e6ba</code></dd></div>
+        <div><dt>Pack</dt><dd><code>—</code></dd></div>
+        <div><dt>Integrity</dt><dd><span class="pill is-proven">L1 VALID</span></dd></div>
+        <div><dt>Tests sealed</dt><dd>5</dd></div>
+      </dl>
+      <p class="detail-label" style="margin-top:22px">Reproduce</p>
+      <pre class="cmd">node bin/proseproof.js check --docs examples/northstar-ledger/README.md --url http://localhost:4177</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="brand small">
+    <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 6.5h13.5M4 14h9M4 21.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m16.5 19.5 3.2 3.2 6-7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    ProseProof
+  </span>
+  <p>Docs shouldn’t lie. Prove them in Chrome.</p>
+  <p class="muted">Report 20261121-205247-heal · generated 2026-11-21T19:59:25.951Z</p>
+</footer>
+</main>
+
+</body>
+</html>

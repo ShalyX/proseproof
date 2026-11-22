@@ -60,9 +60,15 @@ function claimStep(claim, setup) {
     : '';
 
   if (isSignIn) {
-    return expectation
-      ? `Go to the app and ${lowerFirst(action)}, then verify ${expectation}.${every}`
-      : `Go to the app and ${lowerFirst(action)}.`;
+    if (!expectation) return `Go to the app and ${lowerFirst(action)}.`;
+    // A sign-in that ends on "you are on the dashboard" can be authored as a bare
+    // navigation, which leaves the test with no check of its own. Name the visible
+    // landmark so the authoring agent closes with a real assertion.
+    const landmark = /\*\*([^*]+)\*\*/.exec(claim.rawExpectation || '')?.[1];
+    const check = landmark
+      ? `Assert: the page shows the "${landmark}" heading.`
+      : 'Assert: the sign-in form is no longer visible.';
+    return `Go to the app and ${lowerFirst(action)}, then verify ${expectation}.${every} ${check}`;
   }
   if (!action) {
     return `Go to the app, then verify ${expectation}.${every}`;
