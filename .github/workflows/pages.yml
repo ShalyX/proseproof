@@ -1,5 +1,7 @@
 name: Pages
 
+# registered-on: 2026-11-23 (re-touch so GitHub indexes the workflow)
+
 # Publishes the product page and the committed proof snapshot as one static site:
 #   /            -> site/index.html
 #   /demo/       -> demo/index.html (the recorded Truth Report)

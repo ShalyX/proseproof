@@ -1,5 +1,7 @@
 name: ProseProof truth gate
 
+# registered-on: 2026-11-23 (re-touch so GitHub indexes the workflow)
+
 # Kane CLI authenticates a human session today, so this job runs on a runner that
 # already has an authenticated `kane-cli` (label: kane-cli). On a GitHub-hosted
 # runner, open the committed `demo/index.html` snapshot instead — it needs nothing
