@@ -5,6 +5,10 @@ this file cites are committed as artifacts in [`demo/`](demo/) and in the
 operator's run store; the redacted pack is the copy a judge can inspect offline.
 
 - Code state: the commit that contains this file
+- Public artifacts: [repository](https://github.com/ShalyX/proseproof) ·
+  [product page](https://shalyx.github.io/proseproof/) ·
+  [recorded proof report](https://shalyx.github.io/proseproof/demo/)
+- Demo film (3:12, public): https://youtu.be/3jYroIeOCK8
 - Machine: Windows 11, Node v24.14.0, Chrome `157.0.8103.79`, `kane-cli` 0.10.5
 - Showcase app: `examples/northstar-ledger` at `http://localhost:4177`
 - Docs under test: `examples/northstar-ledger/README.md` (5 promises)

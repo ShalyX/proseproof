@@ -7,7 +7,7 @@ check with [Kane CLI](https://www.kaneclihack.sh/), and tells you whether the
 **app** broke or the **documentation** drifted. Then it repairs the right side,
 re-runs Kane, and refuses any "fix" that deletes the promise.
 
-[How it works](docs/HOW-IT-WORKS.md) · [Judge walkthrough](JUDGE_WALKTHROUGH.md) · [Evidence](EVIDENCE.md) · [MIT](LICENSE)
+[How it works](docs/HOW-IT-WORKS.md) · [Demo video](https://youtu.be/3jYroIeOCK8) · [Judge walkthrough](JUDGE_WALKTHROUGH.md) · [Evidence](EVIDENCE.md) · [MIT](LICENSE)
 
 ---
 
