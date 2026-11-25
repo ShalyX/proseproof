@@ -32,7 +32,7 @@ owner: Engineering / Proof
 artifact: `.proseproof/suite/tests/N-01..N-05_test.md`, `.proseproof/suite/claims.json`, `.proseproof/suite/proseproof.policy.yaml`
 environment: Windows 11, Node 24.14.0, kane-cli 0.10.5
 observed_at: 2026-11-21T19:52:47Z (suite file mtimes), reused verbatim by both runs
-limitations: Extracts promises from a structured "Try it" section; docs describing a library API without a browser flow are out of scope.
+limitations: Extracts promises from a structured "Try it" section; docs describing a library API without a browser flow are out of scope. The compiled sign-in prelude names the showcase's post-login landmark, so an app with a different landing page needs that one sentence adjusted in the generated test.
 judge_location: README.md "What ProseProof does", JUDGE_WALKTHROUGH.md path B, demo/report.json `claims[].citation`
 related_rubric: Ships (25%), Craft (25%)
 ```

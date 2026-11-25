@@ -233,6 +233,10 @@ outputs, reset procedure, and the fallback if Kane CLI or Chrome is unavailable.
 
 - The doc must contain a "Try it" section with ordered steps and observable
   outcomes. Pure library docs without a browser flow are out of scope.
+- When a doc lists credentials, the compiled sign-in prelude ends on the
+  showcase's post-login page ("Invoices dashboard"). An app with a different
+  landing page should adjust that one sentence in the generated `_test.md`, or
+  omit the credentials so Kane starts from the documented entry page.
 - Kane replays previous recordings when a test's definition is unchanged. A
   replay can occasionally fail on its own state handling; ProseProof reports that
   as `PLATFORM_ERROR` instead of blaming the app, but it still fails the Kane
